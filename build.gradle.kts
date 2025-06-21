@@ -1,3 +1,5 @@
+import org.jetbrains.kotlin.util.removeSuffixIfPresent
+
 plugins {
     val kotlinVersion = "1.8.0"
     kotlin("jvm") version kotlinVersion
@@ -7,7 +9,7 @@ plugins {
     id("net.mamoe.mirai-console") version "2.16.0"
 }
 
-group = "org.example"
+group = "uk.akane"
 version = "0.1.0"
 
 repositories {
@@ -19,10 +21,13 @@ repositories {
 
 buildConfig {
     className("BuildConstants")
-    packageName("org.example.mirai.plugin")
+    packageName("uk.akane.fatal")
     useKotlinOutput()
 
-    buildConfigField("String", "VERSION", "\"${project.version}\"")
+    buildConfigField("String", "AUTHOR", "\"AkaneTan, PAKTS\"")
+    buildConfigField("String", "MAJOR_VERSION", "\"${project.version}\"")
+    buildConfigField("String", "HASH_VERSION",  '\"' + "git rev-parse --short=7 HEAD".runCommand(workingDir = rootDir) + '\"')
+    buildConfigField("String", "BUILD_TIME", "\"${System.currentTimeMillis()}\"")
 }
 
 mirai {
@@ -36,8 +41,16 @@ mirai {
 }
 
 dependencies {
-    
-    val overflowVersion = "2.16.0"
-    compileOnly("top.mrxiaom:overflow-core-api:$overflowVersion")
-    testConsoleRuntime("top.mrxiaom:overflow-core:$overflowVersion")
+    val overflowVersion = "1.0.6"
+    implementation("org.reflections:reflections:0.10.2")
+    implementation("org.jetbrains.kotlinx:kotlinx-coroutines-core:1.7.0")
+    compileOnly("top.mrxiaom.mirai:overflow-core-api:$overflowVersion")
+    testConsoleRuntime("top.mrxiaom.mirai:overflow-core:$overflowVersion")
 }
+
+fun String.runCommand(
+    workingDir: File = File(".")
+): String = providers.exec {
+    setWorkingDir(workingDir)
+    commandLine(split(' '))
+}.standardOutput.asText.get().removeSuffixIfPresent("\n")

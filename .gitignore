@@ -6,3 +6,5 @@
 /out/
 /run/
 /debug-sandbox
+# Project exclude files
+.DS_Store
