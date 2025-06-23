@@ -16,26 +16,28 @@ class Dispatcher(private val logger: MiraiLogger) {
     private val translator = Translator(logger)
 
     fun initialize() {
-        logger.warning("Initializing...")
+        logger.verbose("Initializing module dispatcher")
         loadCommandModules()
     }
 
     fun cleanup() {
-        logger.warning("Cleaning...")
+        logger.verbose("Cleaning module dispatcher")
         contextCache.clear()
     }
 
     private fun loadCommandModules() {
+        var trieCount = 0
         ClassRegistration.commandModuleClasses.forEach { clazz ->
             try {
                 val module = clazz.kotlin.createInstance()
                 commandTrie.insert(module.commandPrefix, module)
-                logger.info("Loaded command module ${module.commandPrefix}")
+                logger.verbose("Loaded command module ${module.commandPrefix}")
+                trieCount ++
             } catch (e: Exception) {
                 e.printStackTrace()
             }
         }
-        logger.info("Successfully loaded command modules")
+        logger.info("Successfully loaded ${trieCount} command modules")
     }
 
     suspend fun dispatch(event: Event, contact: Contact, message: Message) {
@@ -43,12 +45,12 @@ class Dispatcher(private val logger: MiraiLogger) {
 
         if (userInput.isEmpty()) return
 
-        logger.info("User input: $userInput")
+        logger.verbose("User input: $userInput")
 
         if (commandRegex.containsMatchIn(userInput.substring(0, 1))) {
             val commandContent = userInput.substring(1).trim()
 
-            logger.info("Checking for command $commandContent")
+            logger.verbose("Checking for command $commandContent")
 
             var commandPrefix = ""
 
@@ -58,7 +60,7 @@ class Dispatcher(private val logger: MiraiLogger) {
                 val commandModule = commandTrie.find(commandPrefix)
 
                 if (commandModule != null) {
-                    logger.info("Found command module: ${commandModule.commandPrefix}")
+                    logger.verbose("Found command module: ${commandModule.commandPrefix}")
 
                     val restOfInput = commandContent.substring(i).trim()
                     commandModule.invoke(event, contact, restOfInput, this)
@@ -66,9 +68,9 @@ class Dispatcher(private val logger: MiraiLogger) {
                 }
             }
 
-            logger.warning("No command module found for prefix: $commandPrefix")
+            logger.verbose("No command module found for prefix: $commandPrefix")
         } else {
-            logger.info("Input does not start with a recognized command prefix.")
+            logger.verbose("Input does not start with a recognized command prefix.")
         }
     }
 

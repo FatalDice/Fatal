@@ -35,24 +35,25 @@ class Console {
             var readTime = 0L
 
             while (true) {
-                try {
-                    print("ConsoleContact >> $ANSI_YELLOW")
-                    val input = readLine()
-                    print(ANSI_RESET)
-                    readTime = System.currentTimeMillis()
-                    if (input == "exit") {
-                        return@runBlocking
-                    }
-                    val elapsedTime = measureTimeMillis {
+                print("ConsoleContact >> $ANSI_YELLOW")
+                val input = readLine()
+                print(ANSI_RESET)
+                readTime = System.currentTimeMillis()
+                if (input?.startsWith("/exit") == true) {
+                    break
+                }
+                val elapsedTime = measureTimeMillis {
+                    try {
                         fatalTestEntry.dispatcher.dispatch(
                             fatalTestEntry.testEvent,
                             fatalTestEntry.consoleContact,
                             ConsoleMessage(input ?: "")
                         )
+                    } catch (_: UnsupportedOperationException) {
+                        // Do nothing
                     }
-                } catch (_: UnsupportedOperationException) {
-                    fatalTestEntry.logger.info("Elapsed time: ${System.currentTimeMillis() - readTime} ms")
                 }
+                fatalTestEntry.logger.info("Elapsed time: $elapsedTime ms")
             }
         }
     }
