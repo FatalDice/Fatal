@@ -6,29 +6,39 @@ import uk.akane.fatal.components.Dispatcher
 import kotlin.system.measureTimeMillis
 
 @TestOnly
-class FatalTestEntry {
+class Console {
 
-    private val logger: FatalLogger = FatalLogger()
+    val logger: ConsoleLogger = ConsoleLogger()
 
     val dispatcher = Dispatcher(logger)
     val testEvent = ConsoleInputEvent()
     val consoleContact = ConsoleContact()
 
     companion object {
+
+        const val ANSI_RESET = "\u001B[0m"
+        const val ANSI_GREY = "\u001B[248m"
+        const val ANSI_RED = "\u001B[31m"
+        const val ANSI_GREEN = "\u001B[32m"
+        const val ANSI_PINK = "\u001B[212m"
+        const val ANSI_YELLOW = "\u001B[33m"
+        const val ANSI_BLUE = "\u001B[34m"
+
         @JvmStatic
         fun main(args: Array<String>) = runBlocking {
-            val fatalTestEntry = FatalTestEntry()
+            val fatalTestEntry = Console()
             fatalTestEntry.dispatcher.initialize()
 
             println("Fatal test console\n" +
-                "Type /exit to exit the console.")
+                "Type ${ANSI_YELLOW}/exit${ANSI_RESET} to exit the console.")
 
             var readTime = 0L
 
             while (true) {
                 try {
-                    print("ConsoleContact >> ")
+                    print("ConsoleContact >> $ANSI_YELLOW")
                     val input = readLine()
+                    print(ANSI_RESET)
                     readTime = System.currentTimeMillis()
                     if (input == "exit") {
                         return@runBlocking
@@ -41,7 +51,7 @@ class FatalTestEntry {
                         )
                     }
                 } catch (_: UnsupportedOperationException) {
-                    println("Elapsed time: ${System.currentTimeMillis() - readTime} ms")
+                    fatalTestEntry.logger.info("Elapsed time: ${System.currentTimeMillis() - readTime} ms")
                 }
             }
         }
