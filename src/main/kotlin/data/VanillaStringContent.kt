@@ -12,5 +12,5 @@ object VanillaStringContent {
     const val HELP_OPENSOURCE_INFORMATION = "Keelar/ExprK"
     const val HELP_COMMAND_LIST = "指令列表"
     const val HELP_MAIN_PAGE = "%s\n\n%s\n\n输入 .bot 查看版本信息"
-    const val BOT_MESSAGE = "%s\n输入 .help 查看帮助信息\n\n%s\nRunning with %s (%s)\n自豪地使用 GPL-3.0 协议开源:\n%s"
+    const val BOT_MESSAGE = "%s\n输入 .help 查看帮助信息\n\n%s\nRunning with %s (%s)\n自豪地使用 AGPL-3.0 协议开源:\n%s"
 }

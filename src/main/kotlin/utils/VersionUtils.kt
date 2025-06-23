@@ -41,6 +41,6 @@ object VersionUtils {
     }
 
     fun getOpenSourceAddress(): String {
-        return "https://github.com/AkaneTan/Fatal"
+        return "https://github.com/FatalDice/Fatal"
     }
 }
