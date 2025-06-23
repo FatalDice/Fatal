@@ -32,6 +32,7 @@ repositories {
 dependencies {
     val overflowVersion = "1.0.6"
     implementation("org.jetbrains.kotlinx:kotlinx-coroutines-core:1.10.2")
+
     compileOnly("top.mrxiaom.mirai:overflow-core-api:$overflowVersion")
     testConsoleRuntime("top.mrxiaom.mirai:overflow-core:$overflowVersion")
 }
