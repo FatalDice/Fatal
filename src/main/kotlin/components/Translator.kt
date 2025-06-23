@@ -6,7 +6,7 @@ import uk.akane.fatal.data.VanillaStringContent
 class Translator(private val logger: MiraiLogger) {
 
     private val stringTypesMap: Map<VanillaStringContent.StringTypes, String> =
-        VanillaStringContent.StringTypes.values().associateWith { type ->
+        VanillaStringContent.StringTypes.entries.associateWith { type ->
             val constantName = type.name
             try {
                 VanillaStringContent::class.java.getDeclaredField(constantName).get(null) as String

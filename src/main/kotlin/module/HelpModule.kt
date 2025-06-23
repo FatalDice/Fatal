@@ -18,7 +18,7 @@ class HelpModule : CommandModule {
                 String.format(
                     dispatcher.getTranslator().getTemplate(VanillaStringContent.StringTypes.HELP_MAIN_PAGE),
                     VersionUtils.getPluginVersionHeader(),
-                    VanillaStringContent.HELP_WELCOME_BANNER)
+                    dispatcher.getTranslator().getTemplate(VanillaStringContent.StringTypes.HELP_WELCOME_BANNER))
             )
             return
         }
