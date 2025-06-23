@@ -6,11 +6,11 @@ import uk.akane.fatal.components.Dispatcher
 
 interface CommandModule {
     suspend fun invoke(event: Event, contact: Contact, parameter: String, dispatcher: Dispatcher)
-    fun isMultipleInvoke(): Boolean = false
-
     suspend fun initialize(dispatcher: Dispatcher) { return }
     suspend fun reset(dispatcher: Dispatcher) { return }
     suspend fun destroy() { return }
+    fun isMultipleInvoke(): Boolean = false
 
     val commandPrefix: String
+    val keywordReplacements: Map<String, String>
 }

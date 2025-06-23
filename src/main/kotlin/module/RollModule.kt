@@ -24,4 +24,6 @@ class RollModule : CommandModule {
 
     override val commandPrefix: String
         get() = "r"
+
+    override val keywordReplacements: Map<String, String> = mapOf()
 }

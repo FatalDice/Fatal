@@ -81,10 +81,6 @@ fun Project.buildConfig(configure: BuildConfigExtension.() -> Unit) {
     extension.generateBuildConstants(outputDir)
 }
 
-tasks.withType<KotlinCompile> {
-    source("${buildDir}/generated/sources")
-}
-
 fun String.runCommand(
     workingDir: File = File(".")
 ): String = providers.exec {
@@ -100,4 +96,8 @@ buildConfig {
     buildConfigField("String", "MAJOR_VERSION", "\"${project.version}\"")
     buildConfigField("String", "HASH_VERSION",  '\"' + "git rev-parse --short=7 HEAD".runCommand(workingDir = rootDir) + '\"')
     buildConfigField("String", "BUILD_TIME", "\"${System.currentTimeMillis()}\"")
+}
+
+tasks.withType<KotlinCompile> {
+    source("${buildDir}/generated/sources")
 }

@@ -2,6 +2,7 @@ package uk.akane.fatal.components
 
 import net.mamoe.mirai.utils.MiraiLogger
 import uk.akane.fatal.data.VanillaStringContent
+import uk.akane.fatal.module.CommandModule
 
 class Translator(private val logger: MiraiLogger) {
 
@@ -16,12 +17,19 @@ class Translator(private val logger: MiraiLogger) {
             }
         }
 
-    fun getTemplate(templateName: VanillaStringContent.StringTypes): String {
-        // Get chosen template string
-        // is user customizable.
-        // If user customized a template string, then show user's customized string.
-        // Else, use vanilla string.
-        return stringTypesMap[templateName] ?: "Undefined variable"
+    fun getTranslation(
+        templateName: VanillaStringContent.StringTypes,
+        commandModule: CommandModule? = null
+    ): String {
+        var targetTemplate = stringTypesMap[templateName] ?: "Undefined variable"
+        commandModule?.keywordReplacements?.forEach { pair ->
+            targetTemplate = targetTemplate.replace(
+                '{' + pair.key + '}',
+                pair.value
+            )
+        }
+        return targetTemplate
+
     }
 
 }

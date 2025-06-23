@@ -3,10 +3,10 @@ package uk.akane.fatal.module
 import net.mamoe.mirai.contact.Contact
 import net.mamoe.mirai.event.Event
 import uk.akane.fatal.components.Dispatcher
-import uk.akane.fatal.data.VanillaStringContent
+import uk.akane.fatal.data.VanillaStringContent.StringTypes
 import uk.akane.fatal.utils.VersionUtils
 
-class BotModule : CommandModule {
+class BotModule() : CommandModule {
     override suspend fun invoke(
         event: Event,
         contact: Contact,
@@ -14,16 +14,20 @@ class BotModule : CommandModule {
         dispatcher: Dispatcher
     ) {
         contact.sendMessage(
-            String.format(
-                dispatcher.getTranslator().getTemplate(VanillaStringContent.StringTypes.BOT_MESSAGE),
-                VersionUtils.getPluginVersionHeader(),
-                VersionUtils.getCompilationTime(),
-                VersionUtils.getJdkVersion(),
-                VersionUtils.getOSName(),
-                VersionUtils.getOpenSourceAddress()
+            dispatcher.getTranslator().getTranslation(
+                StringTypes.BOT_MESSAGE,
+                this
             )
         )
     }
 
     override val commandPrefix: String = "bot"
+
+    override val keywordReplacements: Map<String, String> = mapOf(
+        "PluginVersionHeader" to VersionUtils.getPluginVersionHeader(),
+        "CompilationTime" to  VersionUtils.getCompilationTime(),
+        "JdkVersion" to VersionUtils.getJdkVersion(),
+        "OSName" to VersionUtils.getOSName(),
+        "OpenSourceAddress" to VersionUtils.getOpenSourceAddress()
+    )
 }
