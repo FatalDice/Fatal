@@ -3,6 +3,7 @@ package uk.akane.fatal
 import kotlinx.coroutines.runBlocking
 import org.jetbrains.annotations.TestOnly
 import uk.akane.fatal.components.Dispatcher
+import kotlin.system.measureTimeMillis
 
 @TestOnly
 class FatalTestEntry {
@@ -22,20 +23,25 @@ class FatalTestEntry {
             println("Fatal test console\n" +
                 "Type /exit to exit the console.")
 
+            var readTime = 0L
+
             while (true) {
                 try {
                     print("ConsoleContact >> ")
                     val input = readLine()
+                    readTime = System.currentTimeMillis()
                     if (input == "exit") {
                         return@runBlocking
                     }
-                    fatalTestEntry.dispatcher.dispatch(
-                        fatalTestEntry.testEvent,
-                        fatalTestEntry.consoleContact,
-                        ConsoleMessage(input ?: "")
-                    )
+                    val elapsedTime = measureTimeMillis {
+                        fatalTestEntry.dispatcher.dispatch(
+                            fatalTestEntry.testEvent,
+                            fatalTestEntry.consoleContact,
+                            ConsoleMessage(input ?: "")
+                        )
+                    }
                 } catch (_: UnsupportedOperationException) {
-                    // Ignore
+                    println("Elapsed time: ${System.currentTimeMillis() - readTime} ms")
                 }
             }
         }
