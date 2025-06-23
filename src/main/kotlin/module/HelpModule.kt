@@ -16,7 +16,7 @@ class HelpModule : CommandModule {
         if (parameter.isBlank()) {
             contact.sendMessage(
                 String.format(
-                    dispatcher.getTranslator().getTemplate(VanillaStringContent.HELP_MAIN_PAGE),
+                    dispatcher.getTranslator().getTemplate(VanillaStringContent.StringTypes.HELP_MAIN_PAGE),
                     VersionUtils.getPluginVersionHeader(),
                     VanillaStringContent.HELP_WELCOME_BANNER)
             )

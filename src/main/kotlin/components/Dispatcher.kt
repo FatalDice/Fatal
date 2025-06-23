@@ -14,7 +14,7 @@ class Dispatcher(private val logger: MiraiLogger) {
     private val commandRegex = Regex("^[./,;\"'*()&^%$#@!。]")
 
     private val contextCache: MutableMap<String, Any> = mutableMapOf()
-    private val translator = Translator()
+    private val translator = Translator(logger)
 
     fun initialize() {
         logger.warning("Initializing...")
