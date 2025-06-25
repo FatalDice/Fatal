@@ -9,6 +9,7 @@ import kotlinx.coroutines.runBlocking
 import uk.akane.fatal.utils.isNotInteger
 import uk.akane.fatal.utils.isNumber
 import uk.akane.fatal.utils.repeat
+import java.util.PriorityQueue
 import java.util.concurrent.ThreadLocalRandom
 import kotlin.math.max
 import kotlin.math.min
@@ -259,11 +260,36 @@ class Evaluator {
         return@runBlocking results
     }
 
-    private fun List<Long>.keepHighest(count: Int): List<Long> =
-        this.sortedDescending().take(count)
+    fun List<Long>.keepHighest(count: Int): List<Long> {
+        if (count >= this.size) return this
 
-    private fun List<Long>.keepLowest(count: Int): List<Long> =
-        this.sorted().take(count)
+        val minHeap = PriorityQueue<Long>()
+        for (x in this) {
+            if (minHeap.size < count) {
+                minHeap.add(x)
+            } else if (x > minHeap.peek()) {
+                minHeap.poll()
+                minHeap.add(x)
+            }
+        }
+        return minHeap.sortedDescending() // 保持与之前一样的输出顺序
+    }
+
+    fun List<Long>.keepLowest(count: Int): List<Long> {
+        if (count >= this.size) return this
+
+        val maxHeap = PriorityQueue<Long>(compareByDescending { it }) // 大顶堆
+        for (x in this) {
+            if (maxHeap.size < count) {
+                maxHeap.add(x)
+            } else if (x < maxHeap.peek()) {
+                maxHeap.poll()
+                maxHeap.add(x)
+            }
+        }
+        return maxHeap.sorted() // 升序输出
+    }
+
 
     inner class RollResult(
         val results: List<Long>,
@@ -274,7 +300,9 @@ class Evaluator {
         override fun toString(): String {
             return when {
                 fullResults != null && keepMode != null -> {
-                    "$fullResults$keepMode${results.size} → $results"
+                    (if (hasDisabledStepCount) "[${fullResults.sum()}]" else "$fullResults") +
+                    "$keepMode${results.size} → " +
+                    (if (hasDisabledStepCount) "[${results.sum()}]" else "$results")
                 }
                 hasDisabledStepCount -> "[${results.sum()}]"
                 else -> results.toString()
@@ -295,8 +323,8 @@ class Evaluator {
         RollException(message)
 
     companion object {
-        const val ROLL_COUNT_MAX = 1000000
-        const val SIDE_COUNT_MAX = 1000000
+        const val ROLL_COUNT_MAX = 1_000_000
+        const val SIDE_COUNT_MAX = 1_000_000
         const val SHOW_STEP_ROLL_COUNT_MAX = 50
     }
 

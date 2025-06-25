@@ -48,6 +48,8 @@ class Console {
                         )
                     } catch (_: UnsupportedOperationException) {
                         // Do nothing
+                    } catch (_: Exception) {
+                        // Do nothing
                     }
                 }
                 fatalTestEntry.logger.info("Elapsed time: $elapsedTime ms")

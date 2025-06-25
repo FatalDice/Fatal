@@ -11,7 +11,8 @@ object VanillaStringContent {
         HELP_COMMAND_LIST_FOOTER,
         HELP_MAIN_PAGE,
         BOT_MESSAGE,
-        ROLL_RESULT_INFO,
+        ROLL_RESULT_INFO_SINGLE,
+        ROLL_RESULT_INFO_MULTI,
         ROLL_ERROR,
         ROLL_EXPRESSION_ERROR,
         ROLL_INTEGER_ERROR,
@@ -37,7 +38,8 @@ object VanillaStringContent {
     const val BOT_MESSAGE = "{PluginVersionHeader}\n输入 /help 查看帮助信息\n\n{CompilationTime}\nRunning with {JdkVersion} ({OSName})\n自豪地使用 AGPL-3.0 协议开源:\n{OpenSourceAddress}"
 
     // Roll
-    const val ROLL_RESULT_INFO = "{SenderName}投掷出了一枚骰子:\n{RollResult}"
+    const val ROLL_RESULT_INFO_SINGLE = "{SenderName}投掷出了一枚骰子:\n{RollResult}"
+    const val ROLL_RESULT_INFO_MULTI = "{SenderName}投掷出了 {DiceCount} 枚骰子:\n{MultiRollResult}"
     const val ROLL_ERROR = "掷骰错误!"
     const val ROLL_EXPRESSION_ERROR = "表达式错误!"
     const val ROLL_INTEGER_ERROR = "表达式不是整型!"

@@ -20,6 +20,9 @@ class RollModule : CommandModule {
 
     private lateinit var sender: Contact
 
+    private var times: Int = 0
+    private var innerExpr: String = ""
+
     override suspend fun invoke(
         event: Event,
         sender: Contact,
@@ -31,9 +34,15 @@ class RollModule : CommandModule {
         this.sender = sender
 
         try {
+            val countMatch = Regex("""^(\d+)#(.*)""").matchEntire(parameter.trim())
+            times = countMatch?.groupValues[1]?.toInt() ?: 0
+            innerExpr = countMatch?.groupValues[2] ?: ""
             contact.sendMessage(
                 dispatcher.translator.getTranslation(
-                    VanillaStringContent.StringTypes.ROLL_RESULT_INFO,
+                    if (countMatch == null)
+                            VanillaStringContent.StringTypes.ROLL_RESULT_INFO_SINGLE
+                    else
+                        VanillaStringContent.StringTypes.ROLL_RESULT_INFO_MULTI,
                     this
                 )
             )
@@ -73,6 +82,8 @@ class RollModule : CommandModule {
                     false
                 )
             )
+        } catch (e: UnsupportedOperationException) {
+            // DEBUG
         } catch (e: Exception) {
             dispatcher.logger.info("Expression error", e)
             contact.sendMessage(
@@ -90,10 +101,16 @@ class RollModule : CommandModule {
 
     override fun generateKeywordReplacements() = mapOf(
         "SenderName" to MessageUtils.getSenderName(sender),
-        "RollResult" to evaluator.evaluateFormatted(lastParameter)
+        "RollResult" to evaluator.evaluateFormatted(lastParameter),
+        "DiceCount" to times.toString(),
+        "MultiRollResult" to (1..times).joinToString("\n") { evaluator.evaluateFormatted(innerExpr) }
     )
 
     override val helpDescription = MODULE_ROLL_DESC
     override val helpContent = MODULE_ROLL_CONTENT
+
+    enum class Operation {
+        SINGLE_ROLL, MULTIPLE_ROLL
+    }
 
 }
