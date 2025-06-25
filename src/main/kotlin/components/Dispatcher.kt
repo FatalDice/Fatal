@@ -4,7 +4,7 @@ import net.mamoe.mirai.contact.Contact
 import net.mamoe.mirai.event.Event
 import net.mamoe.mirai.message.data.Message
 import net.mamoe.mirai.utils.MiraiLogger
-import uk.akane.fatal.utils.ClassRegistration
+import uk.akane.fatal.utils.ClassRegistrationUtils
 import kotlin.reflect.full.createInstance
 
 class Dispatcher(private val logger: MiraiLogger) {
@@ -13,7 +13,7 @@ class Dispatcher(private val logger: MiraiLogger) {
     private val commandRegex = Regex("^[./,;\"'*()&^%$#@!。]")
 
     private val contextCache: MutableMap<String, Any> = mutableMapOf()
-    private val translator = Translator(logger)
+    val translator = Translator(logger)
 
     fun initialize() {
         logger.verbose("Initializing module dispatcher")
@@ -27,7 +27,7 @@ class Dispatcher(private val logger: MiraiLogger) {
 
     private fun loadCommandModules() {
         var trieCount = 0
-        ClassRegistration.commandModuleClasses.forEach { clazz ->
+        ClassRegistrationUtils.commandModuleClasses.forEach { clazz ->
             try {
                 val module = clazz.kotlin.createInstance()
                 commandTrie.insert(module.commandPrefix, module)
@@ -37,10 +37,10 @@ class Dispatcher(private val logger: MiraiLogger) {
                 e.printStackTrace()
             }
         }
-        logger.info("Successfully loaded ${trieCount} command modules")
+        logger.info("Successfully loaded $trieCount command modules")
     }
 
-    suspend fun dispatch(event: Event, contact: Contact, message: Message) {
+    suspend fun dispatch(event: Event, sender: Contact, contact: Contact, message: Message) {
         val userInput = message.contentToString().trim()
 
         if (userInput.isEmpty()) return
@@ -63,7 +63,7 @@ class Dispatcher(private val logger: MiraiLogger) {
                     logger.verbose("Found command module: ${commandModule.commandPrefix}")
 
                     val restOfInput = commandContent.substring(i).trim()
-                    commandModule.invoke(event, contact, restOfInput, this)
+                    commandModule.invoke(event, sender, contact, restOfInput, this)
                     return
                 }
             }
@@ -74,5 +74,4 @@ class Dispatcher(private val logger: MiraiLogger) {
         }
     }
 
-    fun getTranslator() = translator
 }

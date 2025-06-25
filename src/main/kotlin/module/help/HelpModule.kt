@@ -1,9 +1,10 @@
-package uk.akane.fatal.module
+package uk.akane.fatal.module.help
 
 import net.mamoe.mirai.contact.Contact
 import net.mamoe.mirai.event.Event
 import uk.akane.fatal.components.Dispatcher
-import uk.akane.fatal.data.VanillaStringContent.StringTypes
+import uk.akane.fatal.data.VanillaStringContent
+import uk.akane.fatal.module.CommandModule
 import uk.akane.fatal.utils.VersionUtils
 
 class HelpModule: CommandModule {
@@ -11,6 +12,7 @@ class HelpModule: CommandModule {
 
     override suspend fun invoke(
         event: Event,
+        sender: Contact,
         contact: Contact,
         parameter: String,
         dispatcher: Dispatcher
@@ -19,8 +21,8 @@ class HelpModule: CommandModule {
 
         if (parameter.isBlank()) {
             contact.sendMessage(
-                dispatcher.getTranslator().getTranslation(
-                    StringTypes.HELP_MAIN_PAGE,
+                dispatcher.translator.getTranslation(
+                    VanillaStringContent.StringTypes.HELP_MAIN_PAGE,
                     this
                 )
             )
@@ -31,9 +33,8 @@ class HelpModule: CommandModule {
     override val commandPrefix: String
         get() = "help"
 
-    override val keywordReplacements: Map<String, String>
-        get() = mapOf(
+    override fun generateKeywordReplacements() = mapOf(
             "PluginVersionHeader" to VersionUtils.getPluginVersionHeader(),
-            "HelpWelcomeBanner" to dispatcher?.getTranslator()!!.getTranslation(StringTypes.HELP_WELCOME_BANNER),
+            "HelpWelcomeBanner" to (dispatcher?.translator?.getTranslation(VanillaStringContent.StringTypes.HELP_WELCOME_BANNER) ?: ""),
         )
 }

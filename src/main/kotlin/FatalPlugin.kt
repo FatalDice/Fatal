@@ -55,10 +55,10 @@ object FatalPlugin : KotlinPlugin(
         //配置文件目录 "${dataFolder.absolutePath}/"
         val eventChannel = GlobalEventChannel.parentScope(this)
         eventChannel.subscribeAlways<GroupMessageEvent> {
-            dispatcher.dispatch(it, group, message)
+            dispatcher.dispatch(it, sender, group, message)
         }
         eventChannel.subscribeAlways<FriendMessageEvent> {
-            dispatcher.dispatch(it, sender, message)
+            dispatcher.dispatch(it, sender, sender, message)
         }
         eventChannel.subscribeAlways<NewFriendRequestEvent> {
             //自动同意好友申请

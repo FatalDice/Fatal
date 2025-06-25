@@ -19,7 +19,6 @@ class Console {
         const val ANSI_RESET = "\u001B[0m"
         const val ANSI_GREY = "\u001B[248m"
         const val ANSI_RED = "\u001B[31m"
-        const val ANSI_GREEN = "\u001B[32m"
         const val ANSI_PINK = "\u001B[212m"
         const val ANSI_YELLOW = "\u001B[33m"
         const val ANSI_BLUE = "\u001B[34m"
@@ -32,13 +31,10 @@ class Console {
             println("Fatal test console\n" +
                 "Type ${ANSI_YELLOW}/exit${ANSI_RESET} to exit the console.")
 
-            var readTime = 0L
-
             while (true) {
                 print("ConsoleContact >> $ANSI_YELLOW")
                 val input = readLine()
                 print(ANSI_RESET)
-                readTime = System.currentTimeMillis()
                 if (input?.startsWith("/exit") == true) {
                     break
                 }
@@ -46,6 +42,7 @@ class Console {
                     try {
                         fatalTestEntry.dispatcher.dispatch(
                             fatalTestEntry.testEvent,
+                            fatalTestEntry.consoleContact,
                             fatalTestEntry.consoleContact,
                             ConsoleMessage(input ?: "")
                         )

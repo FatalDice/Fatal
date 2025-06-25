@@ -22,7 +22,7 @@ class Translator(private val logger: MiraiLogger) {
         commandModule: CommandModule? = null
     ): String {
         var targetTemplate = stringTypesMap[templateName] ?: "Undefined variable"
-        commandModule?.keywordReplacements?.forEach { pair ->
+        commandModule?.generateKeywordReplacements()?.forEach { pair ->
             targetTemplate = targetTemplate.replace(
                 '{' + pair.key + '}',
                 pair.value

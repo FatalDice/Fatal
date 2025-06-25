@@ -1,13 +1,14 @@
 package uk.akane.fatal.utils
 
-import uk.akane.fatal.module.BotModule
+import uk.akane.fatal.module.bot.BotModule
 import uk.akane.fatal.module.CommandModule
-import uk.akane.fatal.module.HelpModule
-import uk.akane.fatal.module.RollModule
+import uk.akane.fatal.module.help.HelpModule
+import uk.akane.fatal.module.roll.RollModule
 
-object ClassRegistration {
+object ClassRegistrationUtils {
     val commandModuleClasses: List<Class<out CommandModule>> = listOf(
         BotModule::class.java,
         HelpModule::class.java,
+        RollModule::class.java
     )
 }
