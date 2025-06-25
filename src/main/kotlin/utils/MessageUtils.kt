@@ -18,11 +18,15 @@ object MessageUtils {
             ""
 
     fun getSenderName(sender: Contact, context: Contact): String {
-        var databaseName = ProfilesTableDao.getNickname(
-            sender.id,
-            if (context is Group) context.id else 0
-        )
-        if (databaseName?.isBlank() == true) databaseName = null
-        return databaseName ?: getRawSenderName(sender)
+        try {
+            var databaseName = ProfilesTableDao.getNickname(
+                sender.id,
+                if (context is Group) context.id else 0
+            )
+            if (databaseName?.isBlank() == true) databaseName = null
+            return databaseName ?: getRawSenderName(sender)
+        } catch (_: Exception) {
+            return ""
+        }
     }
 }
