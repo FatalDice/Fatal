@@ -325,7 +325,7 @@ class Evaluator {
     companion object {
         const val ROLL_COUNT_MAX = 1_000_000
         const val SIDE_COUNT_MAX = 1_000_000
-        const val SHOW_STEP_ROLL_COUNT_MAX = 50
+        const val SHOW_STEP_ROLL_COUNT_MAX = 20
     }
 
 }
