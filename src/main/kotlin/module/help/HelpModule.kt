@@ -2,6 +2,7 @@ package uk.akane.fatal.module.help
 
 import net.mamoe.mirai.contact.Contact
 import net.mamoe.mirai.event.Event
+import net.mamoe.mirai.utils.capitalize
 import uk.akane.fatal.components.Dispatcher
 import uk.akane.fatal.components.Trie
 import uk.akane.fatal.data.HelpDefaultEntryContent
@@ -75,7 +76,11 @@ class HelpModule: CommandModule {
                 HelpEntry(
                     commandModule.commandPrefix,
                     commandModule.helpDescription,
-                    commandModule.helpContent
+                    String.format(
+                        VanillaStringContent.HELP_MODULE_INDICATOR,
+                        commandModule.commandPrefix.capitalize()
+                    ) + "\n\n" +
+                        commandModule.helpContent
                 )
             )
         }

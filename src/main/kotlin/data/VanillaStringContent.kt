@@ -30,6 +30,7 @@ object VanillaStringContent {
     const val HELP_COMMAND_LIST_TITLE = "Fatal! Dice 指令列表:"
     const val HELP_COMMAND_LIST_COUNT_FOOTER = "共 %s 项条目。"
     const val HELP_COMMAND_LIST_FOOTER = "本帮助页面为自动生成。"
+    const val HELP_MODULE_INDICATOR = "正在显示 %s 的帮助条目:"
     const val HELP_MAIN_PAGE = "{PluginVersionHeader}\n\n{HelpWelcomeBanner}\n\n/help 指令  获取指令列表\n/help 开源  查看开源信息\n/help 联系  作者联系方式\n\n输入 /bot 查看版本信息"
 
     // Bot
@@ -46,11 +47,29 @@ object VanillaStringContent {
 
     // Module desc.
     const val MODULE_HELP_DESC = "显示帮助命令"
-    const val MODULE_HELP_CONTENT = "· 显示主要帮助命令\n - [/help] 显示主要帮助命令\n\n· 显示帮助词条\n - [/help <词条名称>] 显示对应帮助词条\n* 注: 在输入参数时请不要包括范例中的 <> ，此符号仅作区分用。"
+    const val MODULE_HELP_CONTENT =
+        "· 显示主要帮助命令\n" +
+        " - [/help] 显示主要帮助命令\n\n" +
+        "· 显示帮助词条\n" +
+        " - [/help <词条名称>] 显示对应帮助词条\n\n" +
+        "* 注: 在输入参数时请不要包括范例中的 <> ，此符号仅作区分用。"
 
     const val MODULE_BOT_DESC = "显示机器人信息"
-    const val MODULE_BOT_CONTENT = "· 显示机器人信息\n - [/bot] 打印所有信息\n\n· 开启/关闭 机器人\n - [/bot on] 开启机器人\n - [/bot off] 关闭机器人"
+    const val MODULE_BOT_CONTENT =
+        "· 显示机器人信息\n" +
+        " - [/bot] 打印所有信息\n\n" +
+        "· 开启/关闭 机器人\n" +
+        " - [/bot on] 开启机器人\n" +
+        " - [/bot off] 关闭机器人"
 
     const val MODULE_ROLL_DESC = "掷出骰子"
-    const val MODULE_ROLL_CONTENT = "· 掷出骰子\n - [/r 3d6] 掷出 3 枚 6 面的骰子\n\n· 数学计算\n - [/r 3 ^ 3] 计算 3 的 3 次方\n - [/r 3 d ((3 + 6) * 5)] 投掷 3 枚面数为 ((3 + 6) * 5) 的骰子"
+    const val MODULE_ROLL_CONTENT =
+        "· 掷出骰子\n" +
+        " - [/r 3d6] 掷出 3 枚 6 面的骰子\n\n" +
+        "· 数学计算\n" +
+        " - [/r 3 ^ 3] 计算 3 的 3 次方\n" +
+        " - [/r 3 d ((3 + 6) * 5)] 投掷 3 枚面数为 ((3 + 6) * 5) 的骰子\n\n" +
+        "* 数学计算支持 +, -, *, /, %, ^, √ 以及括号代表的优先级运算\n" +
+        "* 最大掷骰面数和次数为 1,000,000\n" +
+        "* 掷骰次数超过 50，掷骰细节将被隐藏"
 }
