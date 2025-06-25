@@ -17,7 +17,8 @@ object VanillaStringContent {
         ROLL_EXPRESSION_ERROR,
         ROLL_INTEGER_ERROR,
         ROLL_NEGATIVE_ERROR,
-        ROLL_OUT_OF_BOUND_ERROR
+        ROLL_OUT_OF_BOUND_ERROR,
+        ROLL_COUNT_OUT_OF_BOUND_ERROR,
     }
 
     // Module translatable strings
@@ -45,6 +46,7 @@ object VanillaStringContent {
     const val ROLL_INTEGER_ERROR = "表达式不是整型!"
     const val ROLL_NEGATIVE_ERROR = "掷骰参数小于1!"
     const val ROLL_OUT_OF_BOUND_ERROR = "掷骰参数超出最大值!"
+    const val ROLL_COUNT_OUT_OF_BOUND_ERROR = "计算次数超过限定值!"
 
 
     // Module desc.

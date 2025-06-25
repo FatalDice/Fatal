@@ -37,6 +37,11 @@ class RollModule : CommandModule {
             val countMatch = Regex("""^(\d+)#(.*)""").matchEntire(parameter.trim())
             times = countMatch?.groupValues[1]?.toInt() ?: 0
             innerExpr = countMatch?.groupValues[2] ?: ""
+
+            if (times > EXECUTION_TIMES_MAX) {
+                throw ArithmeticException("Execution times is more than $EXECUTION_TIMES_MAX")
+            }
+
             contact.sendMessage(
                 dispatcher.translator.getTranslation(
                     if (countMatch == null)
@@ -82,6 +87,15 @@ class RollModule : CommandModule {
                     false
                 )
             )
+        } catch (e: ArithmeticException) {
+            dispatcher.logger.info("Arithmetic exception", e)
+            contact.sendMessage(
+                dispatcher.translator.getTranslation(
+                    VanillaStringContent.StringTypes.ROLL_COUNT_OUT_OF_BOUND_ERROR,
+                    this,
+                    false
+                )
+            )
         } catch (e: UnsupportedOperationException) {
             // DEBUG
         } catch (e: Exception) {
@@ -109,8 +123,8 @@ class RollModule : CommandModule {
     override val helpDescription = MODULE_ROLL_DESC
     override val helpContent = MODULE_ROLL_CONTENT
 
-    enum class Operation {
-        SINGLE_ROLL, MULTIPLE_ROLL
+    companion object {
+        const val EXECUTION_TIMES_MAX = 20
     }
 
 }
