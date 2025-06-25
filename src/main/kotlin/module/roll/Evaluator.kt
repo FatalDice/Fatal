@@ -124,7 +124,7 @@ class Evaluator {
     }
 
     private fun tokenize(expression: String): List<String> {
-        val regex = Regex("([0-9]+(?:\\.[0-9]+)?)|([+\\-*/^()%d])")
+        val regex = Regex("""(\d+(?:\.\d+)?)|([+*/^()%d])|(kh\d+|kl\d+)""")
         return regex.findAll(expression).map { it.value }.toList()
     }
 
@@ -164,6 +164,36 @@ class Evaluator {
         for (token in postfix) {
             when {
                 token.isNumber() -> stack.add(token.toDouble())
+                token.isNumber() -> stack.add(token.toDouble())
+
+                token.startsWith("kh") || token.startsWith("kl") -> {
+                    val count = token.substring(2).toInt()
+                    if (lastRollList.isEmpty()) throw IllegalStateException("No previous roll to apply $token to")
+
+                    val prev = lastRollList.removeLast()
+                    val sorted = when {
+                        token.startsWith("kh") -> prev.results.keepHighest(count)
+                        token.startsWith("kl") -> prev.results.keepLowest(count)
+                        else -> throw IllegalArgumentException("Unknown keep modifier: $token")
+                    }
+
+                    val newResult = RollResult(
+                        results = sorted,
+                        hasDisabledStepCount = sorted.size > SHOW_STEP_ROLL_COUNT_MAX,
+                        fullResults = prev.results,
+                        keepMode = token.substring(0, 2)
+                    )
+                    lastRollList.add(newResult)
+                    stack.add(sorted.sum().toDouble())
+                }
+
+                token == "d" -> {
+                    val right = stack.removeLast()
+                    val left = stack.removeLast()
+                    val results = rollDice(left, right)
+                    stack.add(results.sum().toDouble())
+                }
+
                 else -> {
                     val right = stack.removeAt(stack.size - 1)
                     val left = stack.removeAt(stack.size - 1)
@@ -175,7 +205,6 @@ class Evaluator {
                         "%" -> left % right
                         "^" -> left.pow(right)
                         "√" -> sqrt(right)
-                        "d" -> rollDice(left, right).sum().toDouble()
                         else -> throw IllegalArgumentException("Unsupported operator: $token")
                     }
                     stack.add(result)
@@ -230,14 +259,29 @@ class Evaluator {
         return@runBlocking results
     }
 
+    private fun List<Long>.keepHighest(count: Int): List<Long> =
+        this.sortedDescending().take(count)
+
+    private fun List<Long>.keepLowest(count: Int): List<Long> =
+        this.sorted().take(count)
+
     inner class RollResult(
         val results: List<Long>,
-        private val hasDisabledStepCount: Boolean
+        private val hasDisabledStepCount: Boolean,
+        val fullResults: List<Long>? = null,
+        val keepMode: String? = null
     ) {
         override fun toString(): String {
-            return if (hasDisabledStepCount) "[${results.sum()}]" else results.toString()
+            return when {
+                fullResults != null && keepMode != null -> {
+                    "$fullResults$keepMode${results.size} → $results"
+                }
+                hasDisabledStepCount -> "[${results.sum()}]"
+                else -> results.toString()
+            }
         }
     }
+
 
     open inner class RollException(message: String) : Exception(message)
 
