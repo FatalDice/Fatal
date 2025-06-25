@@ -19,6 +19,7 @@ class RollModule : CommandModule {
     private var lastParameter = ""
 
     private lateinit var sender: Contact
+    private lateinit var contact: Contact
 
     private var times: Int = 0
     private var innerExpr: String = ""
@@ -32,6 +33,7 @@ class RollModule : CommandModule {
     ) {
         lastParameter = parameter
         this.sender = sender
+        this.contact = contact
 
         try {
             val countMatch = Regex("""^(\d+)#(.*)""").matchEntire(parameter.trim())
@@ -96,7 +98,7 @@ class RollModule : CommandModule {
                     false
                 )
             )
-        } catch (e: UnsupportedOperationException) {
+        } catch (_: UnsupportedOperationException) {
             // DEBUG
         } catch (e: Exception) {
             dispatcher.logger.info("Expression error", e)
@@ -114,7 +116,7 @@ class RollModule : CommandModule {
         get() = "r"
 
     override fun generateKeywordReplacements() = mapOf(
-        "SenderName" to MessageUtils.getSenderName(sender),
+        "SenderName" to MessageUtils.getSenderName(sender, contact),
         "RollResult" to evaluator.evaluateFormatted(lastParameter),
         "DiceCount" to times.toString(),
         "MultiRollResult" to (1..times).joinToString("\n") { evaluator.evaluateFormatted(innerExpr) }

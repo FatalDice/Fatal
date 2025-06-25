@@ -1,5 +1,6 @@
 package uk.akane.fatal.data
 
+@Suppress("Unused")
 object VanillaStringContent {
 
     // Translatable string types
@@ -19,6 +20,8 @@ object VanillaStringContent {
         ROLL_NEGATIVE_ERROR,
         ROLL_OUT_OF_BOUND_ERROR,
         ROLL_COUNT_OUT_OF_BOUND_ERROR,
+        NICKNAME_SET,
+        NICKNAME_UNSET
     }
 
     // Module translatable strings
@@ -48,6 +51,9 @@ object VanillaStringContent {
     const val ROLL_OUT_OF_BOUND_ERROR = "掷骰参数超出最大值!"
     const val ROLL_COUNT_OUT_OF_BOUND_ERROR = "计算次数超过限定值!"
 
+    // Nickname
+    const val NICKNAME_SET = "已为{SenderName}设置昵称{NickName}。"
+    const val NICKNAME_UNSET = "已为{SenderName}清除昵称。"
 
     // Module desc.
     const val MODULE_HELP_DESC = "显示帮助命令"
@@ -76,4 +82,11 @@ object VanillaStringContent {
         "* 数学计算支持 +, -, *, /, %, ^, √ 以及括号代表的优先级运算\n" +
         "* 最大掷骰面数和次数为 1,000,000\n" +
         "* 掷骰次数超过 50，掷骰细节将被隐藏"
+
+    const val MODULE_NICKNAME_DESC = "设置用户昵称"
+    const val MODULE_NICKNAME_CONTENT =
+        "· 设置用户昵称\n" +
+        " - [/nn <用户昵称>] 设置用户昵称\n" +
+        " - [/nn] 删除用户昵称\n\n" +
+        "* 注: 在输入参数时请不要包括范例中的 <> ，此符号仅作区分用。"
 }

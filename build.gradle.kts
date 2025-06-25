@@ -31,7 +31,16 @@ repositories {
 
 dependencies {
     val overflowVersion = "1.0.6"
-    implementation("org.jetbrains.kotlinx:kotlinx-coroutines-core:1.10.2")
+    val coroutineVersion = "1.10.2"
+    val exposedVersion = "0.61.0"
+    val sqliteJDBCVersion = "3.50.1.0"
+
+    implementation("org.jetbrains.kotlinx:kotlinx-coroutines-core:$coroutineVersion")
+    implementation("org.jetbrains.exposed:exposed-core:$exposedVersion")
+    implementation("org.jetbrains.exposed:exposed-dao:$exposedVersion")
+    implementation("org.jetbrains.exposed:exposed-jdbc:$exposedVersion")
+    implementation("org.jetbrains.exposed:exposed-java-time:$exposedVersion")
+    implementation("org.xerial:sqlite-jdbc:$sqliteJDBCVersion")
 
     compileOnly("top.mrxiaom.mirai:overflow-core-api:$overflowVersion")
     testConsoleRuntime("top.mrxiaom.mirai:overflow-core:$overflowVersion")

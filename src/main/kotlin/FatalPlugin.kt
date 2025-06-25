@@ -14,6 +14,7 @@ import net.mamoe.mirai.event.events.GroupMessageEvent
 import net.mamoe.mirai.event.events.NewFriendRequestEvent
 import net.mamoe.mirai.utils.info
 import uk.akane.fatal.components.Dispatcher
+import uk.akane.fatal.data.database.DatabaseFactory
 
 /**
  * 使用 kotlin 版请把
@@ -50,7 +51,10 @@ object FatalPlugin : KotlinPlugin(
     private val dispatcher = Dispatcher(logger)
 
     override fun onEnable() {
+        // Initialize
         dispatcher.initialize()
+        DatabaseFactory.init()
+
         logger.info { "Plugin loaded" }
         //配置文件目录 "${dataFolder.absolutePath}/"
         val eventChannel = GlobalEventChannel.parentScope(this)
