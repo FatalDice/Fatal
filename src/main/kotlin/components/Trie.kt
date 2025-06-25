@@ -8,22 +8,27 @@ class TrieNode {
     var commandModule: CommandModule? = null
 }
 
-class Trie {
-    private val root = TrieNode()
+class Trie<T> {
+    private val root = TrieNode<T>()
 
-    fun insert(command: String, module: CommandModule) {
+    fun insert(key: String, value: T) {
         var currentNode = root
-        for (char in command) {
+        for (char in key) {
             currentNode = currentNode.children.computeIfAbsent(char) { TrieNode() }
         }
-        currentNode.commandModule = module
+        currentNode.value = value
     }
 
-    fun find(commandPrefix: String): CommandModule? {
+    fun find(key: String): T? {
         var currentNode = root
-        for (char in commandPrefix) {
+        for (char in key) {
             currentNode = currentNode.children[char] ?: return null
         }
-        return currentNode.commandModule
+        return currentNode.value
+    }
+
+    private class TrieNode<T> {
+        val children: MutableMap<Char, TrieNode<T>> = mutableMapOf()
+        var value: T? = null
     }
 }

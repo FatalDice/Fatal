@@ -9,11 +9,11 @@ class ConsoleLogger(override val isEnabled: Boolean = true) : MiraiLogger {
         get() = "DebugConsole"
 
     override fun debug(message: String?) {
-        println("${Console.ANSI_GREY}[DEBUG]${Console.ANSI_RESET} $message")
+        println("${Console.ANSI_GREEN}[DEBUG]${Console.ANSI_RESET} $message")
     }
 
     override fun debug(message: String?, e: Throwable?) {
-        println("${Console.ANSI_GREY}[DEBUG]${Console.ANSI_RESET} $message\n${e?.printStackTrace()}")
+        println("${Console.ANSI_GREEN}[DEBUG]${Console.ANSI_RESET} $message\n${e?.printStackTrace()}")
     }
 
     override fun error(message: String?) {

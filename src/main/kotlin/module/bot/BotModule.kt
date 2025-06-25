@@ -4,6 +4,8 @@ import net.mamoe.mirai.contact.Contact
 import net.mamoe.mirai.event.Event
 import uk.akane.fatal.components.Dispatcher
 import uk.akane.fatal.data.VanillaStringContent
+import uk.akane.fatal.data.VanillaStringContent.MODULE_BOT_CONTENT
+import uk.akane.fatal.data.VanillaStringContent.MODULE_BOT_DESC
 import uk.akane.fatal.module.CommandModule
 import uk.akane.fatal.utils.VersionUtils
 
@@ -32,4 +34,7 @@ class BotModule() : CommandModule {
         "OSName" to VersionUtils.getOSName(),
         "OpenSourceAddress" to VersionUtils.getOpenSourceAddress()
     )
+    override val helpDescription = MODULE_BOT_DESC
+    override val helpContent = MODULE_BOT_CONTENT
 }
+

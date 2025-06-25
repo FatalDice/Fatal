@@ -4,20 +4,24 @@ import net.mamoe.mirai.contact.Contact
 import net.mamoe.mirai.event.Event
 import net.mamoe.mirai.message.data.Message
 import net.mamoe.mirai.utils.MiraiLogger
+import uk.akane.fatal.module.CommandModule
+import uk.akane.fatal.module.help.HelpModule
 import uk.akane.fatal.utils.ClassRegistrationUtils
 import kotlin.reflect.full.createInstance
 
-class Dispatcher(private val logger: MiraiLogger) {
+class Dispatcher(val logger: MiraiLogger) {
 
-    private val commandTrie = Trie()
+    private val commandTrie = Trie<CommandModule>()
+    private val commandReferenceList: MutableList<CommandModule> = mutableListOf()
     private val commandRegex = Regex("^[./,;\"'*()&^%$#@!。]")
 
     private val contextCache: MutableMap<String, Any> = mutableMapOf()
-    val translator = Translator(logger)
+    val translator = Translator(this)
 
     fun initialize() {
         logger.verbose("Initializing module dispatcher")
         loadCommandModules()
+        loadHelpDocuments()
     }
 
     fun cleanup() {
@@ -25,12 +29,15 @@ class Dispatcher(private val logger: MiraiLogger) {
         contextCache.clear()
     }
 
+    fun getCommandReferenceList(): List<CommandModule> = commandReferenceList
+
     private fun loadCommandModules() {
         var trieCount = 0
         ClassRegistrationUtils.commandModuleClasses.forEach { clazz ->
             try {
                 val module = clazz.kotlin.createInstance()
                 commandTrie.insert(module.commandPrefix, module)
+                commandReferenceList.add(module)
                 logger.verbose("Loaded command module ${module.commandPrefix}")
                 trieCount ++
             } catch (e: Exception) {
@@ -38,6 +45,10 @@ class Dispatcher(private val logger: MiraiLogger) {
             }
         }
         logger.info("Successfully loaded $trieCount command modules")
+    }
+
+    private fun loadHelpDocuments() {
+        (commandTrie.find("help") as HelpModule).initializeHelpEntry(this)
     }
 
     suspend fun dispatch(event: Event, sender: Contact, contact: Contact, message: Message) {

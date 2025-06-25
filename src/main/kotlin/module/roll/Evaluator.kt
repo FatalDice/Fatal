@@ -120,7 +120,7 @@ class Evaluator {
             resultBuilder.append(formattedExpression, lastIndex, length)
         }
 
-        return "$resultBuilder = $result"
+        return "$resultBuilder = ${if (result.isNotInteger()) result else result.toLong()}"
     }
 
     private fun tokenize(expression: String): List<String> {

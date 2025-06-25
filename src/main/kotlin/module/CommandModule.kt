@@ -12,5 +12,7 @@ interface CommandModule {
     fun isMultipleInvoke(): Boolean = false
     fun generateKeywordReplacements(): Map<String, String>
 
+    val helpDescription: String
+    val helpContent: String
     val commandPrefix: String
 }

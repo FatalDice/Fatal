@@ -5,6 +5,7 @@
 /test/
 /out/
 /run/
-/debug-sandbox
+/debug-sandbox/
+/.kotlin/
 # Project exclude files
 .DS_Store

@@ -6,7 +6,7 @@ import java.util.Locale
 
 object VersionUtils {
     fun getPluginVersion(): String {
-        return "宿命 Dice v${BuildConstants.MAJOR_VERSION}.${BuildConstants.HASH_VERSION}"
+        return "Fatal! Dice v${BuildConstants.MAJOR_VERSION}.${BuildConstants.HASH_VERSION}"
     }
 
     fun getPluginAuthor(): String {
