@@ -7,15 +7,16 @@ import uk.akane.fatal.data.VanillaStringContent
 import uk.akane.fatal.data.VanillaStringContent.MODULE_ROLL_CONTENT
 import uk.akane.fatal.data.VanillaStringContent.MODULE_ROLL_DESC
 import uk.akane.fatal.module.CommandModule
-import uk.akane.fatal.module.roll.Evaluator.RollException
-import uk.akane.fatal.module.roll.Evaluator.RollNumberLessThanOneException
-import uk.akane.fatal.module.roll.Evaluator.RollNumberNotIntegerException
-import uk.akane.fatal.module.roll.Evaluator.RollNumberOutOfBoundsException
+import uk.akane.fatal.module.roll.evaluate.evaluate
+import uk.akane.fatal.module.roll.evaluate.parse
+import uk.akane.fatal.module.roll.evaluate.tokenize
 import uk.akane.fatal.utils.MessageUtils
+import uk.akane.fatal.utils.RollException
+import uk.akane.fatal.utils.RollNumberLessThanOneException
+import uk.akane.fatal.utils.RollNumberOutOfBoundsException
 
 class RollModule : CommandModule {
 
-    private val evaluator = Evaluator()
     private var lastParameter = ""
 
     private lateinit var sender: Contact
@@ -51,15 +52,6 @@ class RollModule : CommandModule {
                     else
                         VanillaStringContent.StringTypes.ROLL_RESULT_INFO_MULTI,
                     this
-                )
-            )
-        } catch (e: RollNumberNotIntegerException) {
-            dispatcher.logger.info("Rolling integer exception", e)
-            contact.sendMessage(
-                dispatcher.translator.getTranslation(
-                    VanillaStringContent.StringTypes.ROLL_INTEGER_ERROR,
-                    this,
-                    false
                 )
             )
         } catch (e: RollNumberLessThanOneException) {
@@ -117,9 +109,9 @@ class RollModule : CommandModule {
 
     override fun generateKeywordReplacements() = mapOf(
         "SenderName" to MessageUtils.getSenderName(sender, contact),
-        "RollResult" to evaluator.evaluateFormatted(lastParameter),
+        "RollResult" to evaluateExpression(lastParameter).toString(),
         "DiceCount" to times.toString(),
-        "MultiRollResult" to (1..times).joinToString("\n") { evaluator.evaluateFormatted(innerExpr) }
+        "MultiRollResult" to ((1..times).joinToString("\n") { evaluateExpression(lastParameter).toString() })
     )
 
     override val helpDescription = MODULE_ROLL_DESC
@@ -128,5 +120,12 @@ class RollModule : CommandModule {
     companion object {
         const val EXECUTION_TIMES_MAX = 20
     }
+
+    fun evaluateExpression(input: String): Long {
+        val tokens = tokenize(input)
+        val (ast, _) = parse(tokens)
+        return evaluate(ast)
+    }
+
 
 }
