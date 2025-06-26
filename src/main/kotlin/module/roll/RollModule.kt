@@ -7,9 +7,9 @@ import uk.akane.fatal.data.VanillaStringContent
 import uk.akane.fatal.data.VanillaStringContent.MODULE_ROLL_CONTENT
 import uk.akane.fatal.data.VanillaStringContent.MODULE_ROLL_DESC
 import uk.akane.fatal.module.CommandModule
-import uk.akane.fatal.module.roll.evaluate.evaluate
-import uk.akane.fatal.module.roll.evaluate.parse
-import uk.akane.fatal.module.roll.evaluate.tokenize
+import uk.akane.fatal.module.roll.evaluate.Expr
+import uk.akane.fatal.module.roll.evaluate.Parser
+import uk.akane.fatal.module.roll.evaluate.Lexeme
 import uk.akane.fatal.utils.MessageUtils
 import uk.akane.fatal.utils.RollException
 import uk.akane.fatal.utils.RollNumberLessThanOneException
@@ -109,9 +109,9 @@ class RollModule : CommandModule {
 
     override fun generateKeywordReplacements() = mapOf(
         "SenderName" to MessageUtils.getSenderName(sender, contact),
-        "RollResult" to evaluateExpression(lastParameter).toString(),
+        "RollResult" to evaluateExpression(lastParameter),
         "DiceCount" to times.toString(),
-        "MultiRollResult" to ((1..times).joinToString("\n") { evaluateExpression(lastParameter).toString() })
+        "MultiRollResult" to ((1..times).joinToString("\n") { evaluateExpression(lastParameter) })
     )
 
     override val helpDescription = MODULE_ROLL_DESC
@@ -121,11 +121,11 @@ class RollModule : CommandModule {
         const val EXECUTION_TIMES_MAX = 20
     }
 
-    fun evaluateExpression(input: String): Long {
-        val tokens = tokenize(input)
-        val (ast, _) = parse(tokens)
-        return evaluate(ast)
+    fun evaluateExpression(input: String): String {
+        val tokens = Lexeme.tokenize(input)
+        val (ast, _) = Parser.parse(tokens)
+        val evaluation = Expr.evaluate(ast)
+        return Expr.reassembleExpression(ast, evaluation.second) + " = " + evaluation.first
     }
-
 
 }

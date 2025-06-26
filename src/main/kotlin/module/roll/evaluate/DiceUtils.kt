@@ -11,7 +11,7 @@ import uk.akane.fatal.utils.RollNumberOutOfBoundsException
 import java.util.concurrent.ThreadLocalRandom
 
 object DiceUtils {
-    fun rollDice(numRolls: Int, sides: Int): List<Long> = runBlocking {
+    fun rollDice(numRolls: Int, sides: Int) : List<Long> = runBlocking {
         if (numRolls < 1 || sides < 1)
             throw RollNumberLessThanOneException("Roll number can only less than one!")
         if (numRolls > ROLL_COUNT_MAX || sides > SIDE_COUNT_MAX)
@@ -45,4 +45,5 @@ object DiceUtils {
 
     const val ROLL_COUNT_MAX = 1_000_000
     const val SIDE_COUNT_MAX = 1_000_000
+    const val SHOW_STEP_COUNT_MAX = 20
 }
