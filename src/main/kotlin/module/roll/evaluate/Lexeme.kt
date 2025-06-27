@@ -22,10 +22,12 @@ object Lexeme {
         DICE,
         KEEP_HIGHEST,
         KEEP_LOWEST,
-        MINIMUM
+        MINIMUM,
     }
 
-    fun tokenize(input: String): List<Token> {
+    fun tokenize(input: String): List<Token> = tokenizeInternal(input.lowercase())
+
+    private fun tokenizeInternal(input: String): List<Token> {
 
         fun scanToken(chars: List<Char>): Pair<Token, Int> {
             val first = chars.first()

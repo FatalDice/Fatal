@@ -1,8 +1,11 @@
 package uk.akane.fatal.module.roll.evaluate
 
+import uk.akane.fatal.module.roll.evaluate.DiceUtils.SHOW_STEP_COUNT_MAX
 import uk.akane.fatal.utils.Bundle
 import uk.akane.fatal.utils.IllegalSyntaxException
-import uk.akane.fatal.utils.take
+import uk.akane.fatal.utils.keepHighest
+import uk.akane.fatal.utils.keepLowest
+import uk.akane.fatal.utils.roundUpToMinimum
 import kotlin.math.pow
 
 object Expr {
@@ -12,8 +15,8 @@ object Expr {
         data class Grouping(val expr: Expr) : Expr() { override fun toString(): String = "($expr)" }
         data class Unary(val op: Op, val right: Expr) : Expr() { override fun toString(): String = "$op $right"}
         data class Binary(val op: Op, val left: Expr, val right: Expr) : Expr() { override fun toString() = "$left $op $right"}
-        data class ModifiableBinary(val op: Op, val left: Expr, val right: Expr) : Expr() { override fun toString() = "$left $op $right"}
-        data class Modifier(val op: Op, val source: Expr, val parameter: Expr) : Expr() { override fun toString() = "$source $op $parameter"}
+        data class ModifiableBinary(val op: Op, val left: Expr, val right: Expr) : Expr() { override fun toString() = "$left$op$right"}
+        data class Modifier(val op: Op, val source: Expr, val parameter: Expr) : Expr() { override fun toString() = "$source$op$parameter"}
     }
 
     sealed class Op(val symbol: String) {
@@ -77,7 +80,13 @@ object Expr {
                 val rightValue = evaluateInternal(expr.right, bundle)
                 val rolled = DiceUtils.rollDice(leftValue.toInt(), rightValue.toInt())
                 val key = expr.toString()
-                bundle.put(key, rolled.toString())
+                bundle.put(
+                    key,
+                    if (rolled.size <= SHOW_STEP_COUNT_MAX)
+                        rolled.toString()
+                    else
+                        "[${rolled.sum()}]"
+                )
                 rolled
             }
 
@@ -94,15 +103,21 @@ object Expr {
         val paramValue = evaluateInternal(param, bundle)
 
         val selected = when (op) {
-            Op.KeepHighest -> raw.sortedDescending().take(paramValue)
-            Op.KeepLowest -> raw.sorted().take(paramValue)
+            Op.KeepHighest -> raw.keepHighest(paramValue)
+            Op.KeepLowest -> raw.keepLowest(paramValue)
+            Op.Minimum -> raw.roundUpToMinimum(paramValue)
             else -> throw IllegalSyntaxException("Unsupported modifier op: $op")
         }
 
         val key = Expr.Modifier(op, source, param).toString()
         bundle.extendOnDemand(
             key,
-            "$op$paramValue → $selected",
+            "$op$paramValue → " +
+                if (selected.size <= SHOW_STEP_COUNT_MAX)
+                    "$selected"
+                else
+                    "[${selected.sum()}]"
+            ,
             op,
             param
         )
