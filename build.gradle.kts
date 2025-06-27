@@ -1,5 +1,6 @@
 import org.jetbrains.kotlin.gradle.tasks.KotlinCompile
 import org.jetbrains.kotlin.util.removeSuffixIfPresent
+import proguard.gradle.ProGuardTask
 import java.io.File
 
 group = "uk.akane"
@@ -12,6 +13,17 @@ plugins {
 
     id("net.mamoe.mirai-console") version "2.16.0"
     id("com.github.johnrengelman.shadow") version "7.1.2"
+}
+
+buildscript {
+    repositories {
+        mavenCentral()
+    }
+    dependencies {
+        val proguardVersion = "7.6.0"
+
+        classpath("com.guardsquare:proguard-gradle:$proguardVersion")
+    }
 }
 
 mirai {
@@ -115,5 +127,50 @@ tasks.withType<KotlinCompile> {
 afterEvaluate {
     tasks.shadowJar {
         enabled = true
+        archiveClassifier.set("debug")
+    }
+}
+tasks.register<ProGuardTask>("proguard") {
+    dependsOn("shadowJar")
+
+    injars(file("${buildDir}/libs/${project.name}-${project.version}-debug.jar"))
+    outjars(file("${buildDir}/libs/${project.name}-${project.version}-release.jar"))
+
+    val javaHome = System.getProperty("java.home")
+    if (System.getProperty("java.version").startsWith("1.")) {
+        libraryjars("$javaHome/lib/rt.jar")
+    } else {
+        libraryjars(mapOf("filter" to "!module-info.class"), "$javaHome/jmods/java.base.jmod")
+        libraryjars(mapOf("filter" to "!module-info.class"), "$javaHome/jmods/java.sql.jmod")
+    }
+
+    addLibraryJarsFromConfiguration(project, "compileClasspath") { jar ->
+        jar.name.contains("annotations") || jar.name.contains("kotlin") ||
+                jar.name.contains("mirai") || jar.name.contains("exposed")
+    }
+
+    configuration("proguard-rules.pro")
+
+    printmapping(file("${buildDir}/proguard/mapping.txt"))
+    allowaccessmodification()
+    repackageclasses("")
+}
+
+tasks.register("assembleRelease") {
+    group = "build"
+    description = "Builds the release jar with shadowJar and obfuscation"
+
+    dependsOn("shadowJar")
+    dependsOn("proguard")
+}
+
+fun ProGuardTask.addLibraryJarsFromConfiguration(
+    project: Project,
+    configurationName: String,
+    filter: (File) -> Boolean = { true }
+) {
+    val configuration = project.configurations.findByName(configurationName)
+    configuration?.resolve()?.filter { it.name.endsWith(".jar") && filter(it) }?.forEach { jar ->
+        libraryjars(jar)
     }
 }
