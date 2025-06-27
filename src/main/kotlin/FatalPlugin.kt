@@ -12,6 +12,7 @@ import net.mamoe.mirai.event.events.BotInvitedJoinGroupRequestEvent
 import net.mamoe.mirai.event.events.FriendMessageEvent
 import net.mamoe.mirai.event.events.GroupMessageEvent
 import net.mamoe.mirai.event.events.NewFriendRequestEvent
+import net.mamoe.mirai.event.events.OtherClientMessageEvent
 import net.mamoe.mirai.utils.info
 import uk.akane.fatal.components.Dispatcher
 import uk.akane.fatal.data.database.DatabaseFactory
@@ -71,6 +72,9 @@ object FatalPlugin : KotlinPlugin(
         eventChannel.subscribeAlways<BotInvitedJoinGroupRequestEvent> {
             //自动同意加群申请
             accept()
+        }
+        eventChannel.subscribeAlways<OtherClientMessageEvent> {
+            dispatcher.dispatch(it, sender, sender, message)
         }
 
         myCustomPermission // 注册权限

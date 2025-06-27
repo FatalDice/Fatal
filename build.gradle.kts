@@ -11,6 +11,7 @@ plugins {
     kotlin("plugin.serialization") version kotlinVersion
 
     id("net.mamoe.mirai-console") version "2.16.0"
+    id("com.github.johnrengelman.shadow") version "7.1.2"
 }
 
 mirai {
@@ -109,4 +110,10 @@ buildConfig {
 
 tasks.withType<KotlinCompile> {
     source("${buildDir}/generated/sources")
+}
+
+afterEvaluate {
+    tasks.shadowJar {
+        enabled = true
+    }
 }
