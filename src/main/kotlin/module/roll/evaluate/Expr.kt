@@ -5,7 +5,9 @@ import uk.akane.fatal.utils.Bundle
 import uk.akane.fatal.utils.IllegalSyntaxException
 import uk.akane.fatal.utils.keepHighest
 import uk.akane.fatal.utils.keepLowest
+import uk.akane.fatal.utils.rerollWithCondition
 import uk.akane.fatal.utils.roundUpToMinimum
+import uk.akane.fatal.utils.toFancyStrikethrough
 import kotlin.math.pow
 
 object Expr {
@@ -15,8 +17,22 @@ object Expr {
         data class Grouping(val expr: Expr) : Expr() { override fun toString(): String = "($expr)" }
         data class Unary(val op: Op, val right: Expr) : Expr() { override fun toString(): String = "$op $right"}
         data class Binary(val op: Op, val left: Expr, val right: Expr) : Expr() { override fun toString() = "$left $op $right"}
-        data class ModifiableBinary(val op: Op, val left: Expr, val right: Expr) : Expr() { override fun toString() = "$left$op$right"}
-        data class Modifier(val op: Op, val source: Expr, val parameter: Expr) : Expr() { override fun toString() = "$source$op$parameter"}
+        data class ModifiableBinary(val op: Op, val left: Expr, val right: Expr) : Expr(), Modification {
+            override fun toString() = "$left$op$right"
+            override var modifiableLeft: Any? = 0
+            override var modifiableRight: Any? = 0
+        }
+        data class Modifier(val op: Op, val source: Expr, val parameter: Expr,
+        ) : Expr(), Modification {
+            override fun toString() = "$source$op$parameter"
+            override var modifiableLeft: Any? = 0
+            override var modifiableRight: Any? = 0
+        }
+
+        interface Modification {
+            var modifiableLeft: Any?
+            var modifiableRight: Any?
+        }
     }
 
     sealed class Op(val symbol: String) {
@@ -30,6 +46,8 @@ object Expr {
         object KeepLowest : Op("kl")
         object Minimum : Op("m")
         object Negative : Op("-")
+        object RerollSmallerThan: Op("<")
+        object RerollLargerThan: Op(">")
 
         override fun toString(): String = symbol
     }
@@ -46,7 +64,7 @@ object Expr {
             is Expr.Unary -> evaluateUnary(expr.op, expr.right, bundle)
             is Expr.Binary -> evaluateBinary(expr.op, expr.left, expr.right, bundle)
             is Expr.ModifiableBinary -> evaluateModifiableBinary(expr, bundle).sum()
-            is Expr.Modifier -> evaluateModifier(expr.op, expr.source, expr.parameter, bundle).first.sum()
+            is Expr.Modifier -> evaluateModifier(expr, bundle).first.sum()
         }
 
     private fun evaluateBinary(op: Op, left: Expr, right: Expr, bundle: Bundle): Long {
@@ -78,6 +96,8 @@ object Expr {
                     throw IllegalSyntaxException("Only dice expressions can be modified.")
                 val leftValue = evaluateInternal(expr.left, bundle)
                 val rightValue = evaluateInternal(expr.right, bundle)
+                expr.modifiableLeft = leftValue.toInt()
+                expr.modifiableRight = rightValue.toInt()
                 val rolled = DiceUtils.rollDice(leftValue.toInt(), rightValue.toInt())
                 val key = expr.toString()
                 bundle.put(
@@ -90,7 +110,7 @@ object Expr {
                 rolled
             }
 
-            is Expr.Modifier -> evaluateModifier(expr.op, expr.source, expr.parameter, bundle).first
+            is Expr.Modifier -> evaluateModifier(expr, bundle).first
 
             else -> throw IllegalSyntaxException("Expression cannot be modified: $expr")
         }
@@ -98,32 +118,40 @@ object Expr {
         return endList
     }
 
-    private fun evaluateModifier(op: Op, source: Expr, param: Expr, bundle: Bundle): Pair<List<Long>, Bundle> {
-        val raw = evaluateModifiableBinary(source, bundle)
-        val paramValue = evaluateInternal(param, bundle)
+    private fun evaluateModifier(expr: Expr.Modifier, bundle: Bundle): Pair<List<Long>, Bundle> {
+        val raw = evaluateModifiableBinary(expr.source, bundle)
+        (expr.source as Expr.Modification).let {
+            expr.modifiableLeft = it.modifiableLeft
+            expr.modifiableRight = it.modifiableRight
+        }
+        val paramValue = evaluateInternal(expr.parameter, bundle)
 
-        val selected = when (op) {
-            Op.KeepHighest -> raw.keepHighest(paramValue)
-            Op.KeepLowest -> raw.keepLowest(paramValue)
-            Op.Minimum -> raw.roundUpToMinimum(paramValue)
-            else -> throw IllegalSyntaxException("Unsupported modifier op: $op")
+        val (selected, formatted) = when (expr.op) {
+            Op.KeepHighest -> raw.keepHighest(paramValue) to ""
+            Op.KeepLowest -> raw.keepLowest(paramValue) to ""
+            Op.Minimum -> raw.roundUpToMinimum(paramValue) to ""
+            Op.RerollSmallerThan -> raw.rerollWithCondition({ it < paramValue }, expr.modifiableRight as Int)
+            Op.RerollLargerThan -> raw.rerollWithCondition({ it > paramValue }, expr.modifiableRight as Int)
+            else -> throw IllegalSyntaxException("Unsupported modifier op: ${expr.op}")
         }
 
-        val key = Expr.Modifier(op, source, param).toString()
+        val key = Expr.Modifier(expr.op, expr.source, expr.parameter).toString()
         bundle.extendOnDemand(
             key,
-            "$op$paramValue → " +
-                if (selected.size <= SHOW_STEP_COUNT_MAX)
+            "${expr.op}$paramValue → " +
+                if (selected.size <= SHOW_STEP_COUNT_MAX && formatted.isBlank())
                     "$selected"
+                else if (selected.size <= SHOW_STEP_COUNT_MAX)
+                    formatted
                 else
-                    "[${selected.sum()}]"
-            ,
-            op,
-            param
+                    "[${selected.sum()}]",
+            expr.op,
+            expr.parameter
         )
 
-        return selected to bundle
+        return selected.map { it } to bundle
     }
+
 
     private fun Bundle.extendOnDemand(
         currentKey: String,

@@ -18,6 +18,8 @@ object Parser {
         TokenType.KEEP_HIGHEST -> Op.KeepHighest
         TokenType.KEEP_LOWEST -> Op.KeepLowest
         TokenType.MINIMUM -> Op.Minimum
+        TokenType.REROLL_SMALLER_THAN -> Op.RerollSmallerThan
+        TokenType.REROLL_LARGER_THAN -> Op.RerollLargerThan
         else -> throw TypeCastException("${this.javaClass} has no destination for cast")
     }
 
@@ -118,7 +120,14 @@ object Parser {
         parseModifiableBinary(::primary, tokens, listOf(TokenType.DICE))
 
     private fun modifier(tokens: List<Token>): Pair<Expr, List<Token>> =
-        parseModifier(::modifiable, tokens, listOf(TokenType.KEEP_HIGHEST, TokenType.KEEP_LOWEST, TokenType.MINIMUM))
+        parseModifier(
+            ::modifiable,
+            tokens,
+            listOf(
+                TokenType.KEEP_HIGHEST, TokenType.KEEP_LOWEST, TokenType.MINIMUM,
+                TokenType.REROLL_SMALLER_THAN, TokenType.REROLL_LARGER_THAN
+            )
+        )
 
     private fun pow(tokens: List<Token>): Pair<Expr, List<Token>> =
         parseBinary(::modifier, tokens, listOf(TokenType.POW))

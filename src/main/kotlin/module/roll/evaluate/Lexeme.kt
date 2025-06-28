@@ -23,6 +23,8 @@ object Lexeme {
         KEEP_HIGHEST,
         KEEP_LOWEST,
         MINIMUM,
+        REROLL_SMALLER_THAN,
+        REROLL_LARGER_THAN
     }
 
     fun tokenize(input: String): List<Token> = tokenizeInternal(input.lowercase())
@@ -58,6 +60,8 @@ object Lexeme {
                 first == ')' -> Token(TokenType.RIGHT_BRACE, ")", null) to 1
                 first == 'd' -> Token(TokenType.DICE, "d", null) to 1
                 first == 'm' -> Token(TokenType.MINIMUM, "m", null) to 1
+                first == '<' -> Token(TokenType.REROLL_SMALLER_THAN, "<", null) to 1
+                first == '>' -> Token(TokenType.REROLL_LARGER_THAN, ">", null) to 1
                 else -> throw IllegalSyntaxException("Invalid syntax was thrown into parser")
             }
         }
