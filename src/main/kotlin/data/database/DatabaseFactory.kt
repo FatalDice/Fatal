@@ -12,6 +12,7 @@ object DatabaseFactory {
         Database.connect("jdbc:sqlite:$dbPath", driver = "org.sqlite.JDBC")
         transaction {
             SchemaUtils.create(ProfilesTable)
+            SchemaUtils.create(GroupsTable)
         }
     }
 

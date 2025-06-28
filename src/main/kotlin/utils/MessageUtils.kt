@@ -19,14 +19,25 @@ object MessageUtils {
 
     fun getSenderName(sender: Contact, context: Contact): String {
         try {
-            var databaseName = ProfilesTableDao.getNickname(
-                sender.id,
-                if (context is Group) context.id else 0
-            )
+            var databaseName = getNickName(sender, context)
             if (databaseName?.isBlank() == true) databaseName = null
             return databaseName ?: getRawSenderName(sender)
         } catch (_: Exception) {
             return ""
         }
     }
+
+    fun setNickName(sender: Contact, context: Contact, name: String) {
+        ProfilesTableDao.setNickname(
+            sender.id,
+            if (context is Group) context.id else 0,
+            name
+        )
+    }
+
+    fun getNickName(sender: Contact, context: Contact) =
+        ProfilesTableDao.getNickname(
+            sender.id,
+            if (context is Group) context.id else 0
+        )
 }

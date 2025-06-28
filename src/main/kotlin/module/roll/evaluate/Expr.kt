@@ -1,13 +1,13 @@
 package uk.akane.fatal.module.roll.evaluate
 
-import uk.akane.fatal.module.roll.evaluate.DiceUtils.SHOW_STEP_COUNT_MAX
+import uk.akane.fatal.utils.DiceUtils.SHOW_STEP_COUNT_MAX
 import uk.akane.fatal.utils.Bundle
+import uk.akane.fatal.utils.DiceUtils
 import uk.akane.fatal.utils.IllegalSyntaxException
 import uk.akane.fatal.utils.keepHighest
 import uk.akane.fatal.utils.keepLowest
 import uk.akane.fatal.utils.rerollWithCondition
 import uk.akane.fatal.utils.roundUpToMinimum
-import uk.akane.fatal.utils.toFancyStrikethrough
 import kotlin.math.pow
 
 object Expr {

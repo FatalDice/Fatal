@@ -20,6 +20,7 @@ import kotlin.math.max
 class HelpModule: CommandModule {
 
     private var dispatcher: Dispatcher? = null
+    private var parameter: String = ""
 
     private val databaseTrie: Trie<HelpEntry> = Trie()
     private val primaryTrie: Trie<HelpEntry> = Trie()
@@ -43,25 +44,35 @@ class HelpModule: CommandModule {
         dispatcher: Dispatcher
     ) {
         this.dispatcher = dispatcher
+        this.parameter = parameter
 
-        val entry = searchOrder.firstNotNullOfOrNull { order ->
-            dispatcher.logger.debug("Start searching for $parameter in $order")
-            val actualTrie = getHelpTrieTypeMap()[order]
-                ?: throw NoSuchElementException("Requested trie not found!")
-            actualTrie.find(parameter)?.also {
-                dispatcher.logger.debug("Found entry:\n$it")
-            }
-        }
-
-        dispatcher.logger.debug("Entry: ${entry}")
+        val entry =
+            if (parameter.isNotBlank())
+                searchOrder.firstNotNullOfOrNull { order ->
+                    val actualTrie = getHelpTrieTypeMap()[order]
+                        ?: throw NoSuchElementException("Requested trie not found!")
+                    actualTrie.find(parameter)?.also {
+                        dispatcher.logger.debug("Found entry:\n$it")
+                    }
+                }
+            else
+                null
 
         contact.sendMessage(
             entry?.content
-                ?: dispatcher.translator.getTranslation(
-                    VanillaStringContent.StringTypes.HELP_MAIN_PAGE,
-                    this
-                )
+                ?: if (parameter.isNotBlank())
+                    dispatcher.translator.getTranslation(
+                        VanillaStringContent.StringTypes.HELP_NOT_FOUND,
+                        this
+                    )
+                else
+                    dispatcher.translator.getTranslation(
+                        VanillaStringContent.StringTypes.HELP_MAIN_PAGE,
+                        this
+                    )
         )
+
+        this.parameter = ""
     }
 
     fun initializeHelpEntry(dispatcher: Dispatcher) {
@@ -131,6 +142,7 @@ class HelpModule: CommandModule {
     override fun generateKeywordReplacements() = mapOf(
             "PluginVersionHeader" to VersionUtils.getPluginVersionHeader(),
             "HelpWelcomeBanner" to (dispatcher?.translator?.getTranslation(VanillaStringContent.StringTypes.HELP_WELCOME_BANNER) ?: ""),
+            "HelpEntry" to parameter
         )
 
     override val helpDescription = MODULE_HELP_DESC

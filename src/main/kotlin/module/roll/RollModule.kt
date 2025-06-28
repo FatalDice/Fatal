@@ -10,10 +10,12 @@ import uk.akane.fatal.module.CommandModule
 import uk.akane.fatal.module.roll.evaluate.Expr
 import uk.akane.fatal.module.roll.evaluate.Parser
 import uk.akane.fatal.module.roll.evaluate.Lexeme
+import uk.akane.fatal.utils.DiceUtils
 import uk.akane.fatal.utils.MessageUtils
 import uk.akane.fatal.utils.RollException
 import uk.akane.fatal.utils.RollNumberLessThanOneException
 import uk.akane.fatal.utils.RollNumberOutOfBoundsException
+import uk.akane.fatal.utils.legalizeDiceExpression
 
 class RollModule : CommandModule {
 
@@ -40,6 +42,8 @@ class RollModule : CommandModule {
             val countMatch = Regex("""^(\d+)#(.*)""").matchEntire(parameter.trim())
             times = countMatch?.groupValues[1]?.toInt() ?: 0
             innerExpr = countMatch?.groupValues[2] ?: ""
+
+            println("Times: $times, innerExpr: $innerExpr")
 
             if (times > EXECUTION_TIMES_MAX) {
                 throw ArithmeticException("Execution times is more than $EXECUTION_TIMES_MAX")
@@ -102,6 +106,9 @@ class RollModule : CommandModule {
                 )
             )
         }
+
+        innerExpr = ""
+        times = 0
     }
 
     override val commandPrefix: String
@@ -109,9 +116,9 @@ class RollModule : CommandModule {
 
     override fun generateKeywordReplacements() = mapOf(
         "SenderName" to MessageUtils.getSenderName(sender, contact),
-        "RollResult" to evaluateExpression(lastParameter),
+        "RollResult" to if (times == 0) evaluateExpression(lastParameter, contact) else "",
         "DiceCount" to times.toString(),
-        "MultiRollResult" to ((1..times).joinToString("\n") { evaluateExpression(lastParameter) })
+        "MultiRollResult" to ((1..times).joinToString("\n") { if (times == 0) return@joinToString ""; evaluateExpression(innerExpr, contact) })
     )
 
     override val helpDescription = MODULE_ROLL_DESC
@@ -121,8 +128,9 @@ class RollModule : CommandModule {
         const val EXECUTION_TIMES_MAX = 20
     }
 
-    fun evaluateExpression(input: String): String {
-        val tokens = Lexeme.tokenize(input)
+    fun evaluateExpression(input: String, context: Contact): String {
+        val defaultDice = DiceUtils.getDefaultDice(context)
+        val tokens = Lexeme.tokenize(input.ifBlank { "d" }.legalizeDiceExpression(1, defaultDice))
         val (ast, _) = Parser.parse(tokens)
         val evaluation = Expr.evaluate(ast)
         return Expr.reassembleExpression(ast, evaluation.second) + " = " + evaluation.first

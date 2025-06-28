@@ -62,7 +62,7 @@ object Lexeme {
                 first == 'm' -> Token(TokenType.MINIMUM, "m", null) to 1
                 first == '<' -> Token(TokenType.REROLL_SMALLER_THAN, "<", null) to 1
                 first == '>' -> Token(TokenType.REROLL_LARGER_THAN, ">", null) to 1
-                else -> throw IllegalSyntaxException("Invalid syntax was thrown into parser")
+                else -> throw IllegalSyntaxException("Invalid syntax was thrown into parser: {$first}")
             }
         }
 

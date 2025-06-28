@@ -1,4 +1,4 @@
-package uk.akane.fatal.module.roll.evaluate
+package uk.akane.fatal.utils
 
 import kotlinx.coroutines.Deferred
 import kotlinx.coroutines.Dispatchers
@@ -6,8 +6,11 @@ import kotlinx.coroutines.async
 import kotlinx.coroutines.awaitAll
 import kotlinx.coroutines.coroutineScope
 import kotlinx.coroutines.runBlocking
-import uk.akane.fatal.utils.RollNumberLessThanOneException
-import uk.akane.fatal.utils.RollNumberOutOfBoundsException
+import net.mamoe.mirai.contact.Contact
+import net.mamoe.mirai.contact.Friend
+import net.mamoe.mirai.contact.Group
+import uk.akane.fatal.data.database.GroupsTableDao
+import uk.akane.fatal.data.database.ProfilesTableDao
 import java.util.concurrent.ThreadLocalRandom
 
 object DiceUtils {
@@ -43,7 +46,26 @@ object DiceUtils {
         return@runBlocking results
     }
 
+    fun getDefaultDice(context: Contact): Long =
+        when (context) {
+            is Friend -> ProfilesTableDao.getDiceCount(0, context.id)
+            is Group -> GroupsTableDao.getDiceCount(context.id)
+            else -> throw IllegalArgumentException("Contact type is illegal")
+        }
+
+    fun setDefaultDice(context: Contact, faceCount: Long?) {
+        println("Default dice: $faceCount")
+        if (faceCount == null) throw RollNumberOutOfBoundsException("faceCount illegal!")
+        when (context) {
+            is Friend -> ProfilesTableDao.setDefaultDice(context.id, 0, faceCount)
+            is Group -> GroupsTableDao.setDefaultDice(context.id, faceCount)
+            else -> throw IllegalArgumentException("Contact type is illegal")
+        }
+    }
+
     const val ROLL_COUNT_MAX = 1_000_000
     const val SIDE_COUNT_MAX = 1_000_000
     const val SHOW_STEP_COUNT_MAX = 8
+
+    const val DEFAULT_DICE = 20L
 }

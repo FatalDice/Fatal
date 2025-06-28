@@ -11,6 +11,7 @@ object VanillaStringContent {
         HELP_COMMAND_LIST,
         HELP_COMMAND_LIST_FOOTER,
         HELP_MAIN_PAGE,
+        HELP_NOT_FOUND,
         BOT_MESSAGE,
         ROLL_RESULT_INFO_SINGLE,
         ROLL_RESULT_INFO_MULTI,
@@ -21,7 +22,14 @@ object VanillaStringContent {
         ROLL_OUT_OF_BOUND_ERROR,
         ROLL_COUNT_OUT_OF_BOUND_ERROR,
         NICKNAME_SET,
-        NICKNAME_UNSET
+        NICKNAME_UNSET,
+        SET_SET_SUCCESSFUL,
+        SET_UNSET_SUCCESSFUL,
+        SET_UNSUCCESSFUL_VARIABLE_NOT_FOUND,
+        SET_UNSUCCESSFUL_ILLEGAL_KEY,
+        DEFAULT_DICE_SET,
+        DEFAULT_DICE_UNSET,
+        DEFAULT_DICE_ILLEGAL
     }
 
     // Module translatable strings
@@ -37,6 +45,7 @@ object VanillaStringContent {
     const val HELP_COMMAND_LIST_FOOTER = "本帮助页面为自动生成。"
     const val HELP_MODULE_INDICATOR = "正在显示 %s 的帮助条目:"
     const val HELP_MAIN_PAGE = "{PluginVersionHeader}\n\n{HelpWelcomeBanner}\n\n/help 指令  获取指令列表\n/help 开源  查看开源信息\n/help 联系  作者联系方式\n\n输入 /bot 查看版本信息"
+    const val HELP_NOT_FOUND = "帮助条目{HelpEntry}未找到。"
 
     // Bot
     const val BOT_MESSAGE = "{PluginVersionHeader}\n输入 /help 查看帮助信息\n\n{CompilationTime}\nRunning with {JdkVersion} ({OSName})\n自豪地使用 AGPL-3.0 协议开源:\n{OpenSourceAddress}"
@@ -51,9 +60,20 @@ object VanillaStringContent {
     const val ROLL_OUT_OF_BOUND_ERROR = "掷骰参数超出最大值!"
     const val ROLL_COUNT_OUT_OF_BOUND_ERROR = "计算次数超过限定值!"
 
+    // Set
+    const val SET_SET_SUCCESSFUL = "已将{VariableName}设置为{VariableKey}。"
+    const val SET_UNSET_SUCCESSFUL = "已将{VariableName}的值清除。"
+    const val SET_UNSUCCESSFUL_VARIABLE_NOT_FOUND = "目标变量{VariableName}未找到!"
+    const val SET_UNSUCCESSFUL_ILLEGAL_KEY = "键值{VariableKey}非法!"
+
     // Nickname
     const val NICKNAME_SET = "已为{SenderName}设置昵称{NickName}。"
     const val NICKNAME_UNSET = "已为{SenderName}清除昵称。"
+
+    // Default Dice
+    const val DEFAULT_DICE_SET = "已将默认骰面设置为{DefaultDice}!"
+    const val DEFAULT_DICE_UNSET = "已将默认骰面清楚!"
+    const val DEFAULT_DICE_ILLEGAL = "骰面键值{DefaultDice}非法!"
 
     // Module desc.
     const val MODULE_HELP_DESC = "显示帮助命令"
@@ -74,19 +94,45 @@ object VanillaStringContent {
 
     const val MODULE_ROLL_DESC = "掷出骰子"
     const val MODULE_ROLL_CONTENT =
-        "· 掷出骰子\n" +
-        " - [/r 3d6] 掷出 3 枚 6 面的骰子\n\n" +
-        "· 数学计算\n" +
-        " - [/r 3 ^ 3] 计算 3 的 3 次方\n" +
-        " - [/r 3 d ((3 + 6) * 5)] 投掷 3 枚面数为 ((3 + 6) * 5) 的骰子\n\n" +
-        "* 数学计算支持 +, -, *, /, %, ^, √ 以及括号代表的优先级运算\n" +
-        "* 最大掷骰面数和次数为 1,000,000\n" +
-        "* 掷骰次数超过 50，掷骰细节将被隐藏"
+        "· 掷骰表达式\n" +
+            " - [/r 3d6] 掷出 3 枚 6 面骰子\n" +
+            " - [/r 4d8kh2] 掷出 4 枚 8 面骰子，保留其中最高的 2 个\n" +
+            " - [/r 6d10kl3] 掷出 6 枚 10 面骰子，保留其中最低的 3 个\n" +
+            " - [/r 2d20m15] 掷出 2 枚 20 面骰子，每个结果若低于 15 则提升至 15\n" +
+            " - [/r 4d6<3] 掷出 4 枚 6 面骰子，小于 3 的将重新投掷一次\n" +
+            " - [/r 4d6>5] 掷出 4 枚 6 面骰子，大于 5 的将重新投掷一次\n\n" +
+
+            "· 数学表达式\n" +
+            " - [/r (3 + 5) * 2] 支持基础四则运算、括号优先级\n" +
+            " - [/r 2^3] 表示 2 的 3 次方\n" +
+            " - 可使用运算符: +, -, *, /, %, ^，并支持括号嵌套\n\n" +
+
+            "* 可组合表达式，例如：[/r (4d6kh3 + 3) * 2]\n" +
+            "* 最大掷骰次数和面数：1,000,000\n" +
+            "* 掷骰次数超过 8 次，将省略部分中间步骤\n"
+
+    const val MODULE_SET_DESC = "设置变量"
+    const val MODULE_SET_CONTENT =
+        "· 设置变量\n" +
+        " - [/set <变量名> <变量键值>] 设置变量\n" +
+        " - [/set <变量名>] 清除变量\n\n" +
+        "· 变量对照表\n" +
+        " - [NickName] - 昵称\n" +
+        " - [DefaultDice] - 默认骰面\n\n" +
+        "* 注: 在输入参数时请不要包括范例中的 <> ，此符号仅作区分用。\n" +
+        "* 注: 变量不分大小写。"
 
     const val MODULE_NICKNAME_DESC = "设置用户昵称"
     const val MODULE_NICKNAME_CONTENT =
         "· 设置用户昵称\n" +
-        " - [/nn <用户昵称>] 设置用户昵称\n" +
-        " - [/nn] 删除用户昵称\n\n" +
-        "* 注: 在输入参数时请不要包括范例中的 <> ，此符号仅作区分用。"
+            " - [/nn <用户昵称>] 设置用户昵称\n" +
+            " - [/nn] 删除用户昵称\n\n" +
+            "* 注: 在输入参数时请不要包括范例中的 <> ，此符号仅作区分用。"
+
+    const val MODULE_DEFAULT_DICE_DESC = "设置默认骰子面数"
+    const val MODULE_DEFAULT_DICE_CONTENT =
+        "· 设置默认骰子面数\n" +
+            " - [/dd <骰子面数>] 设置默认面数，如 20 表示默认使用 d20\n" +
+            " - [/dd] 清除默认面数设置，恢复为系统默认值（d20）\n\n" +
+            "* 注: 在输入参数时请不要包括范例中的 <> ，此符号仅作区分用。"
 }

@@ -1,9 +1,6 @@
 package uk.akane.fatal.utils
 
-import uk.akane.fatal.module.roll.evaluate.DiceUtils
 import java.util.PriorityQueue
-
-fun List<Long>.take(n: Long) = this.take(n.toInt())
 
 fun List<Long>.keepHighest(count: Long): List<Long> {
     if (count >= this.size) return this
@@ -59,4 +56,38 @@ fun List<Long>.rerollWithCondition(
 }
 
 fun Long.toFancyStrikethrough() =
-    toString().let { if (it.length == 1) "$it\u0338" else it.flatMap { listOf(it, '\u0336') }.joinToString("") }
+    toString().let { if (it.length == 1) "$it\u0338" else it.flatMap { it -> listOf(it, '\u0336') }.joinToString("") }
+
+fun String.legalizeDiceExpression(defaultTimes: Long, defaultFaces: Long): String {
+    val builder = StringBuilder()
+    var i = 0
+
+    while (i < this.length) {
+        val c = this[i]
+
+        if (c == 'd') {
+            val prev = this.getOrNull(i - 1)
+            val next = this.getOrNull(i + 1)
+
+            val isPrevValid = prev != null && (prev.isDigit() || prev == ')')
+            val isNextValid = next != null && (next.isDigit() || next == '(')
+
+            if (!isPrevValid) {
+                builder.append(defaultTimes)
+            }
+
+            builder.append('d')
+
+            if (!isNextValid) {
+                builder.append(defaultFaces)
+            }
+
+            i++
+        } else {
+            builder.append(c)
+            i++
+        }
+    }
+
+    return builder.toString()
+}
