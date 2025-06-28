@@ -13,6 +13,7 @@ plugins {
 
     id("net.mamoe.mirai-console") version "2.16.0"
     id("com.github.johnrengelman.shadow") version "7.1.2"
+    id("com.github.gmazzo.buildconfig") version "5.4.0"
 }
 
 buildscript {
@@ -48,7 +49,10 @@ dependencies {
     val exposedVersion = "0.61.0"
     val sqliteJDBCVersion = "3.50.1.0"
 
+    // Kotlin
     implementation("org.jetbrains.kotlinx:kotlinx-coroutines-core:$coroutineVersion")
+
+    // Database
     implementation("org.jetbrains.exposed:exposed-core:$exposedVersion")
     implementation("org.jetbrains.exposed:exposed-dao:$exposedVersion")
     implementation("org.jetbrains.exposed:exposed-jdbc:$exposedVersion")
@@ -59,50 +63,7 @@ dependencies {
     testConsoleRuntime("top.mrxiaom.mirai:overflow-core:$overflowVersion")
 }
 
-open class BuildConfigExtension {
-    private var _className: String = "BuildConfig"
-    private var _packageName: String = ""
-    var className: String
-        set(value) { _className = value }
-        get() = _className
-    var packageName: String
-        set(value) { _packageName = value }
-        get() = _packageName
-    fun BuildConfigExtension.className(className: String) { this.className = className }
-    fun BuildConfigExtension.packageName(packageName: String) { this.packageName = packageName }
-
-    val fields: MutableList<String> = mutableListOf()
-
-    fun buildConfigField(type: String, name: String, value: String) {
-        fields.add("    const val $name: $type = $value")
-    }
-
-    fun generateBuildConstantsFile(): String {
-        val content = StringBuilder()
-        content.appendLine("package $packageName")
-        content.appendLine()
-        content.appendLine("object $className {")
-        fields.forEach { content.appendLine(it) }
-        content.appendLine("}")
-        return content.toString()
-    }
-
-    fun generateBuildConstants(outputDir: File) {
-        val generatedClassContent = generateBuildConstantsFile()
-        outputDir.mkdirs()
-        val file = File(outputDir, "${className}.kt")
-        file.writeText(generatedClassContent)
-    }
-}
-
-fun Project.buildConfig(configure: BuildConfigExtension.() -> Unit) {
-    val extension = extensions.create<BuildConfigExtension>("buildConfig")
-    extension.configure()
-
-    val outputDir = File("${buildDir}/generated/sources")
-    extension.generateBuildConstants(outputDir)
-}
-
+@Suppress("UnstableApiUsage")
 fun String.runCommand(
     workingDir: File = File(".")
 ): String = providers.exec {
@@ -120,16 +81,13 @@ buildConfig {
     buildConfigField("String", "BUILD_TIME", "\"${System.currentTimeMillis()}\"")
 }
 
-tasks.withType<KotlinCompile> {
-    source("${buildDir}/generated/sources")
-}
-
 afterEvaluate {
     tasks.shadowJar {
         enabled = true
         archiveClassifier.set("debug")
     }
 }
+
 tasks.register<ProGuardTask>("proguard") {
     dependsOn("shadowJar")
 
