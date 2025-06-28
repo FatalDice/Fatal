@@ -4,7 +4,7 @@ import proguard.gradle.ProGuardTask
 import java.io.File
 
 group = "uk.akane"
-version = "0.1.0"
+version = "1.0.0"
 
 plugins {
     val kotlinVersion = "2.1.0"
