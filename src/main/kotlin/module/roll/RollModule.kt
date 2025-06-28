@@ -7,15 +7,11 @@ import uk.akane.fatal.data.VanillaStringContent
 import uk.akane.fatal.data.VanillaStringContent.MODULE_ROLL_CONTENT
 import uk.akane.fatal.data.VanillaStringContent.MODULE_ROLL_DESC
 import uk.akane.fatal.module.CommandModule
-import uk.akane.fatal.module.roll.evaluate.Expr
-import uk.akane.fatal.module.roll.evaluate.Parser
-import uk.akane.fatal.module.roll.evaluate.Lexeme
-import uk.akane.fatal.utils.DiceUtils
+import uk.akane.fatal.utils.DiceUtils.evaluateExpression
 import uk.akane.fatal.utils.MessageUtils
 import uk.akane.fatal.utils.RollException
 import uk.akane.fatal.utils.RollNumberLessThanOneException
 import uk.akane.fatal.utils.RollNumberOutOfBoundsException
-import uk.akane.fatal.utils.legalizeDiceExpression
 
 class RollModule : CommandModule {
 
@@ -128,12 +124,6 @@ class RollModule : CommandModule {
         const val EXECUTION_TIMES_MAX = 20
     }
 
-    fun evaluateExpression(input: String, context: Contact): String {
-        val defaultDice = DiceUtils.getDefaultDice(context)
-        val tokens = Lexeme.tokenize(input.ifBlank { "d" }.legalizeDiceExpression(1, defaultDice))
-        val (ast, _) = Parser.parse(tokens)
-        val evaluation = Expr.evaluate(ast)
-        return Expr.reassembleExpression(ast, evaluation.second) + " = " + evaluation.first
-    }
+
 
 }

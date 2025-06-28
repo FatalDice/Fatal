@@ -1,4 +1,4 @@
-package uk.akane.fatal.module.alias
+package uk.akane.fatal.module.set.alias
 
 import net.mamoe.mirai.contact.Contact
 import net.mamoe.mirai.event.Event

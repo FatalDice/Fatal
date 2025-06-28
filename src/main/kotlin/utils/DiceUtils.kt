@@ -11,6 +11,9 @@ import net.mamoe.mirai.contact.Friend
 import net.mamoe.mirai.contact.Group
 import uk.akane.fatal.data.database.GroupsTableDao
 import uk.akane.fatal.data.database.ProfilesTableDao
+import uk.akane.fatal.module.roll.evaluate.Expr
+import uk.akane.fatal.module.roll.evaluate.Lexeme
+import uk.akane.fatal.module.roll.evaluate.Parser
 import java.util.concurrent.ThreadLocalRandom
 
 object DiceUtils {
@@ -61,6 +64,19 @@ object DiceUtils {
             is Group -> GroupsTableDao.setDefaultDice(context.id, faceCount)
             else -> throw IllegalArgumentException("Contact type is illegal")
         }
+    }
+
+    fun evaluateExpression(input: String, context: Contact): String {
+        val (evaluation, ast) = evaluateExpressionRaw(input, context)
+        return Expr.reassembleExpression(ast, evaluation.second) + " = " + evaluation.first
+    }
+
+    fun evaluateExpressionRaw(input: String, context: Contact): Pair<Pair<Long, Bundle>, Expr.Expr> {
+        val defaultDice = getDefaultDice(context)
+        val tokens = Lexeme.tokenize(input.ifBlank { "d" }.legalizeDiceExpression(1, defaultDice))
+        val (ast, _) = Parser.parse(tokens)
+        val evaluation = Expr.evaluate(ast)
+        return evaluation to ast
     }
 
     const val ROLL_COUNT_MAX = 1_000_000

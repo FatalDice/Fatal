@@ -29,18 +29,23 @@ object VanillaStringContent {
         SET_UNSUCCESSFUL_ILLEGAL_KEY,
         DEFAULT_DICE_SET,
         DEFAULT_DICE_UNSET,
-        DEFAULT_DICE_ILLEGAL
+        DEFAULT_DICE_ILLEGAL,
+        RULESET_ILLEGAL_OPERATION,
+        RULESET_INSERT_COMPLETE,
+        RULESET_DELETE_COMPLETE,
+        RULESET_LIST,
+        RULESET_GENERATION
     }
 
     // Module translatable strings
 
     // Help
     const val HELP_WELCOME_BANNER = "基于 Kotlin 实现的高机能 TRPG 掷骰机器人"
-    const val HELP_OPENSOURCE_INFORMATION = "Fatal! Dice 基于这些项目编写而成:\n\nmamoe/Mirai\nMrXiaoM/overflow\nJetBrains/Kotlin\n\n本项目自豪地使用 AGPL-3.0 协议开源，有关 AGPL-3.0 协议的详细信息，请翻阅: https://www.gnu.org/licenses/agpl-3.0.en.html\n如有鸣谢缺失，请联系开发者。"
-    const val HELP_CONTACT = "Fatal! Dice 用户交流群: 709707258\n\n有 BUG 或者建议想要反馈，也可以到官方 Github 上提交 Issue。"
+    const val HELP_OPENSOURCE_INFORMATION = "宿命 Dice 基于这些项目编写而成:\n\nmamoe/Mirai\nMrXiaoM/overflow\nJetBrains/Kotlin\n\n本项目自豪地使用 AGPL-3.0 协议开源，有关 AGPL-3.0 协议的详细信息，请翻阅: https://www.gnu.org/licenses/agpl-3.0.en.html\n如有鸣谢缺失，请联系开发者。"
+    const val HELP_CONTACT = "宿命 Dice 用户交流群: 709707258\n\n有 BUG 或者建议想要反馈，也可以到官方 Github 上提交 Issue。"
     const val HELP_COMMAND_LIST = "指令"
     const val HELP_COMMAND_LIST_DESC = "查看指令列表"
-    const val HELP_COMMAND_LIST_TITLE = "Fatal! Dice 指令列表:"
+    const val HELP_COMMAND_LIST_TITLE = "宿命 Dice 指令列表:"
     const val HELP_COMMAND_LIST_COUNT_FOOTER = "共 %s 项条目。"
     const val HELP_COMMAND_LIST_FOOTER = "本帮助页面为自动生成。"
     const val HELP_MODULE_INDICATOR = "正在显示 %s 的帮助条目:"
@@ -75,6 +80,13 @@ object VanillaStringContent {
     const val DEFAULT_DICE_UNSET = "已将默认骰面清楚!"
     const val DEFAULT_DICE_ILLEGAL = "骰面键值{DefaultDice}非法!"
 
+    // Ruleset
+    const val RULESET_ILLEGAL_OPERATION = "规则组操作非法!"
+    const val RULESET_INSERT_COMPLETE = "已插入规则组{RulesetName}。"
+    const val RULESET_DELETE_COMPLETE = "已删除规则组{RulesetName}。"
+    const val RULESET_LIST = "以下是记录的规则组列表:\n{RulesetList}"
+    const val RULESET_GENERATION = "生成了名为{RulesetName}的规则组:\n{RulesetGeneration}"
+
     // Module desc.
     const val MODULE_HELP_DESC = "显示帮助命令"
     const val MODULE_HELP_CONTENT =
@@ -95,21 +107,21 @@ object VanillaStringContent {
     const val MODULE_ROLL_DESC = "掷出骰子"
     const val MODULE_ROLL_CONTENT =
         "· 掷骰表达式\n" +
-            " - [/r 3d6] 掷出 3 枚 6 面骰子\n" +
-            " - [/r 4d8kh2] 掷出 4 枚 8 面骰子，保留其中最高的 2 个\n" +
-            " - [/r 6d10kl3] 掷出 6 枚 10 面骰子，保留其中最低的 3 个\n" +
-            " - [/r 2d20m15] 掷出 2 枚 20 面骰子，每个结果若低于 15 则提升至 15\n" +
-            " - [/r 4d6<3] 掷出 4 枚 6 面骰子，小于 3 的将重新投掷一次\n" +
-            " - [/r 4d6>5] 掷出 4 枚 6 面骰子，大于 5 的将重新投掷一次\n\n" +
+        " - [/r 3d6] 掷出 3 枚 6 面骰子\n" +
+        " - [/r 4d8kh2] 掷出 4 枚 8 面骰子，保留其中最高的 2 个\n" +
+        " - [/r 6d10kl3] 掷出 6 枚 10 面骰子，保留其中最低的 3 个\n" +
+        " - [/r 2d20m15] 掷出 2 枚 20 面骰子，每个结果若低于 15 则提升至 15\n" +
+        " - [/r 4d6<3] 掷出 4 枚 6 面骰子，小于 3 的将重新投掷一次\n" +
+        " - [/r 4d6>5] 掷出 4 枚 6 面骰子，大于 5 的将重新投掷一次\n\n" +
 
-            "· 数学表达式\n" +
-            " - [/r (3 + 5) * 2] 支持基础四则运算、括号优先级\n" +
-            " - [/r 2^3] 表示 2 的 3 次方\n" +
-            " - 可使用运算符: +, -, *, /, %, ^，并支持括号嵌套\n\n" +
+        "· 数学表达式\n" +
+        " - [/r (3 + 5) * 2] 支持基础四则运算、括号优先级\n" +
+        " - [/r 2^3] 表示 2 的 3 次方\n" +
+        " - 可使用运算符: +, -, *, /, %, ^，并支持括号嵌套\n\n" +
 
-            "* 可组合表达式，例如：[/r (4d6kh3 + 3) * 2]\n" +
-            "* 最大掷骰次数和面数：1,000,000\n" +
-            "* 掷骰次数超过 8 次，将省略部分中间步骤\n"
+        "* 可组合表达式，例如：[/r (4d6kh3 + 3) * 2]\n" +
+        "* 最大掷骰次数和面数：1,000,000\n" +
+        "* 掷骰次数超过 8 次，将省略部分中间步骤\n"
 
     const val MODULE_SET_DESC = "设置变量"
     const val MODULE_SET_CONTENT =
@@ -135,4 +147,23 @@ object VanillaStringContent {
             " - [/dd <骰子面数>] 设置默认面数，如 20 表示默认使用 d20\n" +
             " - [/dd] 清除默认面数设置，恢复为系统默认值（d20）\n\n" +
             "* 注: 在输入参数时请不要包括范例中的 <> ，此符号仅作区分用。"
+
+    const val MODULE_RULESET_DESC = "管理生成规则集"
+    const val MODULE_RULESET_CONTENT =
+        "· 管理生成规则集\n" +
+        " - [/ruleset add <名字> <属性列表>]\n" +
+        "   添加一个生成规则集\n" +
+        " - [/ruleset remove <名字>]\n" +
+        "   移除一个生成规则集\n" +
+        " - [/ruleset list]\n" +
+        "   列出所有生成规则集\n" +
+        " - [/ruleset generate <名字>]\n"+
+        "   生成一个生成规则集\n\n" +
+        "· 属性列表格式\n" +
+        " - [<变量名>=掷骰表达式]\n" +
+        "   每个不同的生成规则之间用英文 \",\" 隔开\n\n" +
+        "· 指令范例\n" +
+        " - [/ruleset add coc INT=2d6+6, EDU=2d6+6]" +
+        "   添加一个名称为 COC 的生成规则集，生成两个名为 INT 与 EDU 的元素\n\n"+
+        "* 注: 在输入参数时请不要包括范例中的 <> ，此符号仅作区分用。"
 }
