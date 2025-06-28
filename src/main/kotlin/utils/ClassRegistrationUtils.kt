@@ -1,13 +1,13 @@
 package uk.akane.fatal.utils
 
-import uk.akane.fatal.module.bot.BotModule
 import uk.akane.fatal.module.CommandModule
-import uk.akane.fatal.module.set.alias.DefaultDiceModule
+import uk.akane.fatal.module.bot.BotModule
 import uk.akane.fatal.module.help.HelpModule
-import uk.akane.fatal.module.set.alias.NicknameModule
 import uk.akane.fatal.module.roll.RollModule
 import uk.akane.fatal.module.ruleset.RulesetModule
 import uk.akane.fatal.module.set.SetModule
+import uk.akane.fatal.module.set.alias.DefaultDiceModule
+import uk.akane.fatal.module.set.alias.NicknameModule
 
 object ClassRegistrationUtils {
     val commandModuleClasses: List<Class<out CommandModule>> = listOf(

@@ -17,7 +17,7 @@ import uk.akane.fatal.module.CommandModule
 import uk.akane.fatal.utils.VersionUtils
 import kotlin.math.max
 
-class HelpModule: CommandModule {
+class HelpModule : CommandModule {
 
     private var dispatcher: Dispatcher? = null
     private var parameter: String = ""
@@ -112,9 +112,11 @@ class HelpModule: CommandModule {
                 .append(" - ${commandModule.helpDescription}\n")
         }
         commandListBuilder.append('\n')
-            .append(String.format(
-                VanillaStringContent.HELP_COMMAND_LIST_COUNT_FOOTER,
-                dispatcher.getCommandReferenceList().size)
+            .append(
+                String.format(
+                    VanillaStringContent.HELP_COMMAND_LIST_COUNT_FOOTER,
+                    dispatcher.getCommandReferenceList().size
+                )
             )
             .append('\n')
             .append(HELP_COMMAND_LIST_FOOTER)
@@ -140,10 +142,11 @@ class HelpModule: CommandModule {
         get() = "help"
 
     override fun generateKeywordReplacements() = mapOf(
-            "PluginVersionHeader" to VersionUtils.getPluginVersionHeader(),
-            "HelpWelcomeBanner" to (dispatcher?.translator?.getTranslation(VanillaStringContent.StringTypes.HELP_WELCOME_BANNER) ?: ""),
-            "HelpEntry" to parameter
-        )
+        "PluginVersionHeader" to VersionUtils.getPluginVersionHeader(),
+        "HelpWelcomeBanner" to (dispatcher?.translator?.getTranslation(VanillaStringContent.StringTypes.HELP_WELCOME_BANNER)
+            ?: ""),
+        "HelpEntry" to parameter
+    )
 
     override val helpDescription = MODULE_HELP_DESC
     override val helpContent = MODULE_HELP_CONTENT

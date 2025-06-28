@@ -39,7 +39,7 @@ class Dispatcher(val logger: MiraiLogger) {
                 commandTrie.insert(module.commandPrefix, module)
                 commandReferenceList.add(module)
                 logger.verbose("Loaded command module ${module.commandPrefix}")
-                trieCount ++
+                trieCount++
             } catch (e: Exception) {
                 e.printStackTrace()
             }

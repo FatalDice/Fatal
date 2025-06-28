@@ -41,19 +41,23 @@ object VanillaStringContent {
 
     // Help
     const val HELP_WELCOME_BANNER = "基于 Kotlin 实现的高机能 TRPG 掷骰机器人"
-    const val HELP_OPENSOURCE_INFORMATION = "宿命 Dice 基于这些项目编写而成:\n\nmamoe/Mirai\nMrXiaoM/overflow\nJetBrains/Kotlin\n\n本项目自豪地使用 AGPL-3.0 协议开源，有关 AGPL-3.0 协议的详细信息，请翻阅: https://www.gnu.org/licenses/agpl-3.0.en.html\n如有鸣谢缺失，请联系开发者。"
-    const val HELP_CONTACT = "宿命 Dice 用户交流群: 709707258\n\n有 BUG 或者建议想要反馈，也可以到官方 Github 上提交 Issue。"
+    const val HELP_OPENSOURCE_INFORMATION =
+        "宿命 Dice 基于这些项目编写而成:\n\nmamoe/Mirai\nMrXiaoM/overflow\nJetBrains/Kotlin\n\n本项目自豪地使用 AGPL-3.0 协议开源，有关 AGPL-3.0 协议的详细信息，请翻阅: https://www.gnu.org/licenses/agpl-3.0.en.html\n如有鸣谢缺失，请联系开发者。"
+    const val HELP_CONTACT =
+        "宿命 Dice 用户交流群: 709707258\n\n有 BUG 或者建议想要反馈，也可以到官方 Github 上提交 Issue。"
     const val HELP_COMMAND_LIST = "指令"
     const val HELP_COMMAND_LIST_DESC = "查看指令列表"
     const val HELP_COMMAND_LIST_TITLE = "宿命 Dice 指令列表:"
     const val HELP_COMMAND_LIST_COUNT_FOOTER = "共 %s 项条目。"
     const val HELP_COMMAND_LIST_FOOTER = "本帮助页面为自动生成。"
     const val HELP_MODULE_INDICATOR = "正在显示 %s 的帮助条目:"
-    const val HELP_MAIN_PAGE = "{PluginVersionHeader}\n\n{HelpWelcomeBanner}\n\n/help 指令  获取指令列表\n/help 开源  查看开源信息\n/help 联系  作者联系方式\n\n输入 /bot 查看版本信息"
+    const val HELP_MAIN_PAGE =
+        "{PluginVersionHeader}\n\n{HelpWelcomeBanner}\n\n/help 指令  获取指令列表\n/help 开源  查看开源信息\n/help 联系  作者联系方式\n\n输入 /bot 查看版本信息"
     const val HELP_NOT_FOUND = "帮助条目{HelpEntry}未找到。"
 
     // Bot
-    const val BOT_MESSAGE = "{PluginVersionHeader}\n输入 /help 查看帮助信息\n\n{CompilationTime}\nRunning with {JdkVersion} ({OSName})\n自豪地使用 AGPL-3.0 协议开源:\n{OpenSourceAddress}"
+    const val BOT_MESSAGE =
+        "{PluginVersionHeader}\n输入 /help 查看帮助信息\n\n{CompilationTime}\nRunning with {JdkVersion} ({OSName})\n自豪地使用 AGPL-3.0 协议开源:\n{OpenSourceAddress}"
 
     // Roll
     const val ROLL_RESULT_INFO_SINGLE = "{SenderName}投掷出了一枚骰子:\n{RollResult}"
@@ -157,13 +161,13 @@ object VanillaStringContent {
         "   移除一个生成规则集\n" +
         " - [/ruleset list]\n" +
         "   列出所有生成规则集\n" +
-        " - [/ruleset generate <名字>]\n"+
+        " - [/ruleset generate <名字>]\n" +
         "   生成一个生成规则集\n\n" +
         "· 属性列表格式\n" +
         " - [<变量名>=掷骰表达式]\n" +
         "   每个不同的生成规则之间用英文 \",\" 隔开\n\n" +
         "· 指令范例\n" +
         " - [/ruleset add coc INT=2d6+6, EDU=2d6+6]" +
-        "   添加一个名称为 COC 的生成规则集，生成两个名为 INT 与 EDU 的元素\n\n"+
+        "   添加一个名称为 COC 的生成规则集，生成两个名为 INT 与 EDU 的元素\n\n" +
         "* 注: 在输入参数时请不要包括范例中的 <> ，此符号仅作区分用。"
 }

@@ -1,6 +1,6 @@
 package uk.akane.fatal.utils
 
-import java.util.PriorityQueue
+import java.util.*
 
 fun List<Long>.keepHighest(count: Long): List<Long> {
     if (count >= this.size) return this

@@ -1,6 +1,5 @@
 package uk.akane.fatal.components
 
-import net.mamoe.mirai.utils.MiraiLogger
 import uk.akane.fatal.data.VanillaStringContent
 import uk.akane.fatal.module.CommandModule
 

@@ -2,7 +2,7 @@ package uk.akane.fatal.utils
 
 import uk.akane.fatal.BuildConstants
 import java.text.SimpleDateFormat
-import java.util.Locale
+import java.util.*
 
 object VersionUtils {
     fun getPluginVersion(): String {
@@ -37,7 +37,10 @@ object VersionUtils {
     }
 
     fun getCompilationTime(): String {
-        return SimpleDateFormat("EEEE, MMMM d, yyyy h:mm:ss a z", Locale.ENGLISH).format(BuildConstants.BUILD_TIME.toLong())
+        return SimpleDateFormat(
+            "EEEE, MMMM d, yyyy h:mm:ss a z",
+            Locale.ENGLISH
+        ).format(BuildConstants.BUILD_TIME.toLong())
     }
 
     fun getOpenSourceAddress(): String {

@@ -38,6 +38,7 @@ open class SetModule : CommandModule {
                 "defaultdice" -> {
                     DiceUtils.setDefaultDice(contact, variableKey.toLongOrNull())
                 }
+
                 else -> throw IllegalArgumentException("Unknown variable name")
             }
             contact.sendMessage(
@@ -79,7 +80,8 @@ open class SetModule : CommandModule {
     open fun getVariableName() =
         ""
 
-    private fun isSetVariable(parameter: String) = if (getVariableName().isEmpty()) parameter.trim().contains(' ') else parameter.isNotBlank()
+    private fun isSetVariable(parameter: String) =
+        if (getVariableName().isEmpty()) parameter.trim().contains(' ') else parameter.isNotBlank()
 
     override fun generateKeywordReplacements(): Map<String, String> = mapOf(
         "VariableName" to variableName,

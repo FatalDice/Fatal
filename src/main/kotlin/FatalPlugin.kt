@@ -3,11 +3,7 @@ package uk.akane.fatal
 import net.mamoe.mirai.console.plugin.jvm.JvmPluginDescription
 import net.mamoe.mirai.console.plugin.jvm.KotlinPlugin
 import net.mamoe.mirai.event.GlobalEventChannel
-import net.mamoe.mirai.event.events.BotInvitedJoinGroupRequestEvent
-import net.mamoe.mirai.event.events.FriendMessageEvent
-import net.mamoe.mirai.event.events.GroupMessageEvent
-import net.mamoe.mirai.event.events.NewFriendRequestEvent
-import net.mamoe.mirai.event.events.OtherClientMessageEvent
+import net.mamoe.mirai.event.events.*
 import net.mamoe.mirai.utils.info
 import uk.akane.fatal.components.Dispatcher
 import uk.akane.fatal.data.database.DatabaseFactory

@@ -1,10 +1,10 @@
 package uk.akane.fatal.module.roll.evaluate
 
-import uk.akane.fatal.utils.ParseException
-import uk.akane.fatal.module.roll.evaluate.Lexeme.TokenType
-import uk.akane.fatal.module.roll.evaluate.Lexeme.Token
-import uk.akane.fatal.module.roll.evaluate.Expr.Op
 import uk.akane.fatal.module.roll.evaluate.Expr.Expr
+import uk.akane.fatal.module.roll.evaluate.Expr.Op
+import uk.akane.fatal.module.roll.evaluate.Lexeme.Token
+import uk.akane.fatal.module.roll.evaluate.Lexeme.TokenType
+import uk.akane.fatal.utils.ParseException
 
 object Parser {
 

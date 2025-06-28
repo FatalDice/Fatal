@@ -1,11 +1,6 @@
 package uk.akane.fatal.utils
 
-import kotlinx.coroutines.Deferred
-import kotlinx.coroutines.Dispatchers
-import kotlinx.coroutines.async
-import kotlinx.coroutines.awaitAll
-import kotlinx.coroutines.coroutineScope
-import kotlinx.coroutines.runBlocking
+import kotlinx.coroutines.*
 import net.mamoe.mirai.contact.Contact
 import net.mamoe.mirai.contact.Friend
 import net.mamoe.mirai.contact.Group
@@ -17,37 +12,31 @@ import uk.akane.fatal.module.roll.evaluate.Parser
 import java.util.concurrent.ThreadLocalRandom
 
 object DiceUtils {
-    fun rollDice(numRolls: Int, sides: Int) : List<Long> = runBlocking {
-        if (numRolls < 1 || sides < 1)
-            throw RollNumberLessThanOneException("Roll number can only less than one!")
-        if (numRolls > ROLL_COUNT_MAX || sides > SIDE_COUNT_MAX)
-            throw RollNumberOutOfBoundsException("Roll number cannot be larger than 1,000,000!")
-
-        val results = mutableListOf<Long>()
-
-        val coreNumber = Runtime.getRuntime().availableProcessors()
-        val taskPerCoroutine = numRolls / coreNumber
-        val extraTask = numRolls % coreNumber
-
-        val jobs = mutableListOf<Deferred<List<Long>>>()
-
-        coroutineScope {
-            repeat(coreNumber) { index ->
-                jobs.add(async(Dispatchers.Default) {
-                    val localResults = mutableListOf<Long>()
-
-                    repeat(if (index == coreNumber - 1) taskPerCoroutine + extraTask else taskPerCoroutine) {
-                        localResults.add(ThreadLocalRandom.current().nextLong(1L, sides.toLong() + 1L))
-                    }
-                    localResults
-                })
-            }
-            val jobResults = jobs.awaitAll()
-            jobResults.forEach { results.addAll(it) }
+    fun rollDice(numRolls: Int, sides: Int): List<Long> = runBlocking {
+        require(numRolls >= 1) { "Roll number must be >= 1" }
+        require(sides >= 1) { "Side count must be >= 1" }
+        require(numRolls <= ROLL_COUNT_MAX && sides <= SIDE_COUNT_MAX) {
+            "Roll number or side count exceeds allowed limits"
         }
 
-        return@runBlocking results
+        val coreCount = SystemUtils.systemCores.coerceAtMost(numRolls)
+        val chunkSize = numRolls / coreCount
+        val remainder = numRolls % coreCount
+
+        val returnVal = coroutineScope {
+            (0 until coreCount).map { index ->
+                async(Dispatchers.Default) {
+                    val rolls = if (index == coreCount - 1) chunkSize + remainder else chunkSize
+                    LongArray(rolls) {
+                        ThreadLocalRandom.current().nextLong(1L, sides.toLong() + 1L)
+                    }.asList()
+                }
+            }.awaitAll().flatten()
+        }
+
+        return@runBlocking returnVal
     }
+
 
     fun getDefaultDice(context: Contact): Long =
         when (context) {

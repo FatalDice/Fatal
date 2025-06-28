@@ -48,7 +48,7 @@ class RollModule : CommandModule {
             contact.sendMessage(
                 dispatcher.translator.getTranslation(
                     if (countMatch == null)
-                            VanillaStringContent.StringTypes.ROLL_RESULT_INFO_SINGLE
+                        VanillaStringContent.StringTypes.ROLL_RESULT_INFO_SINGLE
                     else
                         VanillaStringContent.StringTypes.ROLL_RESULT_INFO_MULTI,
                     this
@@ -114,7 +114,12 @@ class RollModule : CommandModule {
         "SenderName" to MessageUtils.getSenderName(sender, contact),
         "RollResult" to if (times == 0) evaluateExpression(lastParameter, contact) else "",
         "DiceCount" to times.toString(),
-        "MultiRollResult" to ((1..times).joinToString("\n") { if (times == 0) return@joinToString ""; evaluateExpression(innerExpr, contact) })
+        "MultiRollResult" to ((1..times).joinToString("\n") {
+            if (times == 0) return@joinToString ""; evaluateExpression(
+            innerExpr,
+            contact
+        )
+        })
     )
 
     override val helpDescription = MODULE_ROLL_DESC
@@ -123,7 +128,6 @@ class RollModule : CommandModule {
     companion object {
         const val EXECUTION_TIMES_MAX = 20
     }
-
 
 
 }

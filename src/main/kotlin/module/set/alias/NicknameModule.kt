@@ -4,7 +4,6 @@ import net.mamoe.mirai.contact.Contact
 import net.mamoe.mirai.event.Event
 import uk.akane.fatal.components.Dispatcher
 import uk.akane.fatal.data.VanillaStringContent
-import uk.akane.fatal.module.CommandModule
 import uk.akane.fatal.module.set.SetModule
 import uk.akane.fatal.utils.MessageUtils
 

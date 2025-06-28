@@ -29,11 +29,12 @@ class BotModule() : CommandModule {
 
     override fun generateKeywordReplacements() = mapOf(
         "PluginVersionHeader" to VersionUtils.getPluginVersionHeader(),
-        "CompilationTime" to  VersionUtils.getCompilationTime(),
+        "CompilationTime" to VersionUtils.getCompilationTime(),
         "JdkVersion" to VersionUtils.getJdkVersion(),
         "OSName" to VersionUtils.getOSName(),
         "OpenSourceAddress" to VersionUtils.getOpenSourceAddress()
     )
+
     override val helpDescription = MODULE_BOT_DESC
     override val helpContent = MODULE_BOT_CONTENT
 }

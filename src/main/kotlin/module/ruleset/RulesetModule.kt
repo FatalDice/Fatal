@@ -7,8 +7,6 @@ import uk.akane.fatal.data.VanillaStringContent
 import uk.akane.fatal.data.database.RulesetsTableDao
 import uk.akane.fatal.module.CommandModule
 import uk.akane.fatal.utils.DiceUtils.evaluateExpressionRaw
-import kotlin.collections.chunked
-import kotlin.collections.joinToString
 
 open class RulesetModule : CommandModule {
 

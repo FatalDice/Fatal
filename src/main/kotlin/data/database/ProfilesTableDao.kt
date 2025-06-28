@@ -1,9 +1,9 @@
 package uk.akane.fatal.data.database
 
-import org.jetbrains.exposed.sql.transactions.transaction
 import org.jetbrains.exposed.sql.and
 import org.jetbrains.exposed.sql.insert
 import org.jetbrains.exposed.sql.selectAll
+import org.jetbrains.exposed.sql.transactions.transaction
 import org.jetbrains.exposed.sql.update
 import uk.akane.fatal.utils.DiceUtils
 import java.time.LocalDateTime

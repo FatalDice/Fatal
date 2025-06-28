@@ -1,28 +1,36 @@
 package uk.akane.fatal.module.roll.evaluate
 
+import uk.akane.fatal.utils.*
 import uk.akane.fatal.utils.DiceUtils.SHOW_STEP_COUNT_MAX
-import uk.akane.fatal.utils.Bundle
-import uk.akane.fatal.utils.DiceUtils
-import uk.akane.fatal.utils.IllegalSyntaxException
-import uk.akane.fatal.utils.keepHighest
-import uk.akane.fatal.utils.keepLowest
-import uk.akane.fatal.utils.rerollWithCondition
-import uk.akane.fatal.utils.roundUpToMinimum
 import kotlin.math.pow
 
 object Expr {
 
     sealed class Expr {
-        data class Literal(val value: Long) : Expr() { override fun toString(): String = value.toString() }
-        data class Grouping(val expr: Expr) : Expr() { override fun toString(): String = "($expr)" }
-        data class Unary(val op: Op, val right: Expr) : Expr() { override fun toString(): String = "$op $right"}
-        data class Binary(val op: Op, val left: Expr, val right: Expr) : Expr() { override fun toString() = "$left $op $right"}
+        data class Literal(val value: Long) : Expr() {
+            override fun toString(): String = value.toString()
+        }
+
+        data class Grouping(val expr: Expr) : Expr() {
+            override fun toString(): String = "($expr)"
+        }
+
+        data class Unary(val op: Op, val right: Expr) : Expr() {
+            override fun toString(): String = "$op $right"
+        }
+
+        data class Binary(val op: Op, val left: Expr, val right: Expr) : Expr() {
+            override fun toString() = "$left $op $right"
+        }
+
         data class ModifiableBinary(val op: Op, val left: Expr, val right: Expr) : Expr(), Modification {
             override fun toString() = "$left$op$right"
             override var modifiableLeft: Any? = 0
             override var modifiableRight: Any? = 0
         }
-        data class Modifier(val op: Op, val source: Expr, val parameter: Expr,
+
+        data class Modifier(
+            val op: Op, val source: Expr, val parameter: Expr,
         ) : Expr(), Modification {
             override fun toString() = "$source$op$parameter"
             override var modifiableLeft: Any? = 0
@@ -46,8 +54,8 @@ object Expr {
         object KeepLowest : Op("kl")
         object Minimum : Op("m")
         object Negative : Op("-")
-        object RerollSmallerThan: Op("<")
-        object RerollLargerThan: Op(">")
+        object RerollSmallerThan : Op("<")
+        object RerollLargerThan : Op(">")
 
         override fun toString(): String = symbol
     }
@@ -180,8 +188,8 @@ object Expr {
             }
 
             else -> {
-                bundle.get<String>(expr.toString()) ?:
-                    throw IllegalSyntaxException("Error encountered during reassemble")
+                bundle.get<String>(expr.toString())
+                    ?: throw IllegalSyntaxException("Error encountered during reassemble")
             }
         }
 }
