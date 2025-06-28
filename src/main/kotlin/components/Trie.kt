@@ -1,13 +1,5 @@
 package uk.akane.fatal.components
 
-import uk.akane.fatal.module.CommandModule
-import kotlin.text.iterator
-
-class TrieNode {
-    val children = mutableMapOf<Char, TrieNode>()
-    var commandModule: CommandModule? = null
-}
-
 class Trie<T> {
     private val root = TrieNode<T>()
 
@@ -27,8 +19,29 @@ class Trie<T> {
         return currentNode.value
     }
 
+    fun findLongestPrefixMatch(input: String): Pair<T, Int>? {
+        var currentNode = root
+        var lastValueNode: TrieNode<T>? = null
+        var lastMatchIndex = 0
+
+        for ((index, char) in input.withIndex()) {
+            currentNode = currentNode.children[char] ?: break
+            if (currentNode.value != null) {
+                lastValueNode = currentNode
+                lastMatchIndex = index + 1
+            }
+        }
+
+        return if (lastValueNode?.value != null) {
+            lastValueNode.value!! to lastMatchIndex
+        } else {
+            null
+        }
+    }
+
     private class TrieNode<T> {
         val children: MutableMap<Char, TrieNode<T>> = mutableMapOf()
         var value: T? = null
     }
 }
+

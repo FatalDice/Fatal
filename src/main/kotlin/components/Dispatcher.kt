@@ -53,23 +53,19 @@ class Dispatcher(val logger: MiraiLogger) {
 
     suspend fun dispatch(event: Event, sender: Contact, contact: Contact, message: Message) {
         val userInput = message.contentToString().trim()
-
         if (userInput.isEmpty()) return
 
-        if (commandRegex.containsMatchIn(userInput.substring(0, 1))) {
+        val firstChar = userInput.firstOrNull()
+        if (firstChar != null && commandRegex.matches(firstChar.toString())) {
             val commandContent = userInput.substring(1).trim()
-
-            for (i in commandContent.length downTo 1) {
-                val commandPrefix = commandContent.substring(0, i)
-                val commandModule = commandTrie.find(commandPrefix)
-
-                if (commandModule != null) {
-                    val restOfInput = commandContent.substring(i).trim()
-                    commandModule.invoke(event, sender, contact, restOfInput, this)
-                    return
-                }
+            val match = commandTrie.findLongestPrefixMatch(commandContent)
+            if (match != null) {
+                val (commandModule, consumedLength) = match
+                val restOfInput = commandContent.substring(consumedLength).trim()
+                commandModule.invoke(event, sender, contact, restOfInput, this)
+            } else {
+                logger.verbose("No matching command found in Trie.")
             }
-
         } else {
             logger.verbose("Input does not start with a recognized command prefix.")
         }

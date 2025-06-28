@@ -1,5 +1,4 @@
--keep class uk.akane.fatal.FatalPlugin { *; }
--keep class uk.akane.fatal.data.** { *; }
+-keep class uk.akane.fatal.** { *; }
 
 -keep class net.mamoe.mirai.console.plugin.jvm.KotlinPlugin { *; }
 -keep class net.mamoe.mirai.console.plugin.jvm.JvmPluginDescription { *; }
