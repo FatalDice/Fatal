@@ -5,6 +5,7 @@ object VanillaStringContent {
 
     // Translatable string types
     enum class StringTypes {
+        EMPTY,
         HELP_WELCOME_BANNER,
         HELP_OPENSOURCE_INFORMATION,
         HELP_CONTACT,
@@ -171,5 +172,12 @@ object VanillaStringContent {
         "· 指令范例\n" +
         " - [/ruleset add coc INT=2d6+6, EDU=2d6+6]" +
         "   添加一个名称为 COC 的生成规则集，生成两个名为 INT 与 EDU 的元素\n\n" +
+        "* 注: 在输入参数时请不要包括范例中的 <> ，此符号仅作区分用。"
+
+    const val MODULE_COC_DESC = "快速生成 COC 作成"
+    const val MODULE_COC_CONTENT =
+        "· 生成 COC 作成\n" +
+        " - [/coc <生成数量>] 生成一些 COC 的人物卡作成\n\n" +
+        "* 注: 生成参数可忽略，这样只会生成 1 次人物卡作成。\n" +
         "* 注: 在输入参数时请不要包括范例中的 <> ，此符号仅作区分用。"
 }

@@ -61,7 +61,9 @@ open class RulesetModule : CommandModule {
                     }
 
                     OperationType.GENERATE -> {
-                        val entries = RulesetsTableDao.queryById(rulesetName)
+                        val entries = getRulesetEntries().ifEmpty {
+                            RulesetsTableDao.queryById(rulesetName)
+                        }
 
                         val times = rulesetValue.toIntOrNull() ?: 1
                         repeat(times) { index ->
@@ -109,6 +111,10 @@ open class RulesetModule : CommandModule {
     open fun getOperation() = ""
 
     open fun getRulesetName() = ""
+
+    open fun getRulesetValue() = ""
+
+    open fun getRulesetEntries(): List<Pair<String, String>> = emptyList()
 
     override fun generateKeywordReplacements() = mapOf(
         "RulesetName" to rulesetName,
