@@ -84,6 +84,10 @@ open class RulesetModule : CommandModule {
         } catch (e: IllegalArgumentException) {
             announceIllegalOperationType()
             e.printStackTrace()
+        } catch (e: IndexOutOfBoundsException) {
+            announceIllegalRulesetValue()
+            onErrorRemoveUnfinishedRuleset(rulesetName)
+            e.printStackTrace()
         }
     }
 
@@ -119,6 +123,13 @@ open class RulesetModule : CommandModule {
         )
     )
 
+    private suspend fun announceIllegalRulesetValue() = contact!!.sendMessage(
+        dispatcher!!.translator.getTranslation(
+            VanillaStringContent.StringTypes.RULESET_ILLEGAL_RULESET_VALUE,
+            this
+        )
+    )
+
     private fun String.compileToList() =
         this
             .split(',')
@@ -126,6 +137,10 @@ open class RulesetModule : CommandModule {
                 val (key, value) = it.split('=', limit = 2)
                 key.trim() to value.trim()
             }
+
+    private fun onErrorRemoveUnfinishedRuleset(rulesetName: String) {
+        RulesetsTableDao.deleteById(rulesetName)
+    }
 
     override val helpDescription =
         VanillaStringContent.MODULE_RULESET_DESC

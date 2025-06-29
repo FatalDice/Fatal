@@ -31,6 +31,7 @@ object VanillaStringContent {
         DEFAULT_DICE_UNSET,
         DEFAULT_DICE_ILLEGAL,
         RULESET_ILLEGAL_OPERATION,
+        RULESET_ILLEGAL_RULESET_VALUE,
         RULESET_INSERT_COMPLETE,
         RULESET_DELETE_COMPLETE,
         RULESET_LIST,
@@ -86,6 +87,7 @@ object VanillaStringContent {
 
     // Ruleset
     const val RULESET_ILLEGAL_OPERATION = "规则组操作非法!"
+    const val RULESET_ILLEGAL_RULESET_VALUE = "规则组参数非法!"
     const val RULESET_INSERT_COMPLETE = "已插入规则组{RulesetName}。"
     const val RULESET_DELETE_COMPLETE = "已删除规则组{RulesetName}。"
     const val RULESET_LIST = "以下是记录的规则组列表:\n{RulesetList}"
