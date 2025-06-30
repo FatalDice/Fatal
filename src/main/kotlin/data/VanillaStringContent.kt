@@ -144,16 +144,16 @@ object VanillaStringContent {
     const val MODULE_NICKNAME_DESC = "设置用户昵称"
     const val MODULE_NICKNAME_CONTENT =
         "· 设置用户昵称\n" +
-            " - [/nn <用户昵称>] 设置用户昵称\n" +
-            " - [/nn] 删除用户昵称\n\n" +
-            "* 注: 在输入参数时请不要包括范例中的 <> ，此符号仅作区分用。"
+        " - [/nn <用户昵称>] 设置用户昵称\n" +
+        " - [/nn] 删除用户昵称\n\n" +
+        "* 注: 在输入参数时请不要包括范例中的 <> ，此符号仅作区分用。"
 
     const val MODULE_DEFAULT_DICE_DESC = "设置默认骰子面数"
     const val MODULE_DEFAULT_DICE_CONTENT =
         "· 设置默认骰子面数\n" +
-            " - [/dd <骰子面数>] 设置默认面数，如 20 表示默认使用 d20\n" +
-            " - [/dd] 清除默认面数设置，恢复为系统默认值（d20）\n\n" +
-            "* 注: 在输入参数时请不要包括范例中的 <> ，此符号仅作区分用。"
+        " - [/dd <骰子面数>] 设置默认面数，如 20 表示默认使用 d20\n" +
+        " - [/dd] 清除默认面数设置，恢复为系统默认值（d20）\n\n" +
+        "* 注: 在输入参数时请不要包括范例中的 <> ，此符号仅作区分用。"
 
     const val MODULE_RULESET_DESC = "管理生成规则集"
     const val MODULE_RULESET_CONTENT =
@@ -178,6 +178,13 @@ object VanillaStringContent {
     const val MODULE_COC_CONTENT =
         "· 生成 COC 作成\n" +
         " - [/coc <生成数量>] 生成一些 COC 的人物卡作成\n\n" +
+        "* 注: 生成参数可忽略，这样只会生成 1 次人物卡作成。\n" +
+        "* 注: 在输入参数时请不要包括范例中的 <> ，此符号仅作区分用。"
+
+    const val MODULE_DND_DESC = "快速生成 DND 作成"
+    const val MODULE_DND_CONTENT =
+        "· 生成 DND 作成\n" +
+        " - [/dnd <生成数量>] 生成一些 DND 的人物卡作成\n\n" +
         "* 注: 生成参数可忽略，这样只会生成 1 次人物卡作成。\n" +
         "* 注: 在输入参数时请不要包括范例中的 <> ，此符号仅作区分用。"
 }

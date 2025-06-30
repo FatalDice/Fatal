@@ -67,11 +67,12 @@ open class RulesetModule : CommandModule {
 
                         val times = rulesetValue.toIntOrNull() ?: 1
                         repeat(times) { index ->
-                            if (getOperation().isBlank())
+                            if (getOperation().isBlank()) {
                                 generateRuleset(entries, contact)
-                            else
-                                generateRulesetHierarchy(entries, contact)
-                            if (times > 1 && index != times - 1) compiledList += getSeparator().ifBlank { "\n\n" }
+                                if (times > 1 && index != times - 1) compiledList += "\n\n"
+                            } else {
+                                generateRulesetFormula(entries, contact, times, index)
+                            }
                         }
 
                         if (compiledList.isBlank()) throw IllegalArgumentException("Compiled list is empty")
@@ -97,18 +98,18 @@ open class RulesetModule : CommandModule {
     }
 
     private fun generateRuleset(entries: List<Pair<String, String>>, contact: Contact) {
-        val maxKeyLength = entries.maxOfOrNull { it.first.length }?.coerceAtMost(12) ?: 8
+        val maxKeyLength = entries.maxOfOrNull { it.first.length.coerceAtMost(12) } ?: 8
 
-        val rendered = entries.map { (key, value) ->
-            val paddedKey = key.padEnd(maxKeyLength, ' ')
-            "$paddedKey  ${evaluateExpressionRaw(value, contact).first.first}"
+        val (rendered, total, special) = entries.fold(Triple(mutableListOf<String>(), 0, 0)) { (list, sum, specialSum), (key, value) ->
+            val result = evaluateExpressionRaw(value, contact).first.first.toInt()
+            val newSum = sum + result
+            val newSpecial = if (key.endsWith('*')) specialSum + result else specialSum
+            list += key.removeSuffix("*").padEnd(maxKeyLength) + "  " + result
+            Triple(list, newSum, newSpecial)
         }
 
-        compiledList += rendered
-            .chunked(3)
-            .joinToString("\n") { row ->
-                row.joinToString("    ")
-            }
+        compiledList += rendered.chunked(3).joinToString("\n") { it.joinToString("    ") }
+        compiledList += "\n[${total - special}/$total]"
     }
 
     open fun getOperation() = ""
@@ -117,12 +118,18 @@ open class RulesetModule : CommandModule {
 
     open fun getRulesetValue() = ""
 
-    open fun getSeparator() = ""
-
     open fun getRulesetEntries(): List<Pair<String, String>> = emptyList()
 
-    open fun generateRulesetHierarchy(entries: List<Pair<String, String>>, contact: Contact) {
+    open fun generateRulesetFormula(
+        entries: List<Pair<String, String>>,
+        contact: Contact,
+        times: Int,
+        index: Int
+    ) {
         generateRuleset(entries, contact)
+        if (times > 1 && index != times - 1) {
+            compiledList += "\n\n"
+        }
     }
 
     override fun generateKeywordReplacements() = mapOf(

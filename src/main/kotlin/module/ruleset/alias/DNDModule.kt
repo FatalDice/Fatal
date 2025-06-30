@@ -40,20 +40,28 @@ class DNDModule : RulesetModule() {
         "v6" to "4d6kh3",
     )
 
-    override fun generateRulesetHierarchy(entries: List<Pair<String, String>>, contact: Contact) {
+    override fun generateRulesetFormula(
+        entries: List<Pair<String, String>>,
+        contact: Contact,
+        times: Int,
+        index: Int
+    ) {
         val sortedResults = entries.map { (_, value) ->
             evaluateExpressionRaw(value, contact).first.first
-        }.sorted()
+        }.sortedDescending()
 
-        compiledList += "[" + sortedResults.joinToString(", ") + "]"
+        compiledList += "[" + sortedResults.joinToString(", ") + "]" +
+            ": " + sortedResults.sum()
+
+        if (times > 1 && index != times - 1) {
+            compiledList += "\n"
+        }
     }
 
-    override fun getSeparator(): String = "\n"
-
     override val helpDescription =
-        VanillaStringContent.MODULE_COC_DESC
+        VanillaStringContent.MODULE_DND_DESC
     override val helpContent =
-        VanillaStringContent.MODULE_COC_CONTENT
+        VanillaStringContent.MODULE_DND_CONTENT
     override val commandPrefix =
         "dnd"
 }

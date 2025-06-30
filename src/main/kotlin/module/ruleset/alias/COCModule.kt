@@ -5,6 +5,7 @@ import net.mamoe.mirai.event.Event
 import uk.akane.fatal.components.Dispatcher
 import uk.akane.fatal.data.VanillaStringContent
 import uk.akane.fatal.module.ruleset.RulesetModule
+import uk.akane.fatal.utils.DiceUtils.evaluateExpressionRaw
 
 class COCModule : RulesetModule() {
 
@@ -39,7 +40,7 @@ class COCModule : RulesetModule() {
         "智力" to "(2d6+6)*5",
         "意志" to "3d6*5",
         "教育" to "(2d6+6)*5",
-        "幸运" to "3d6*5",
+        "幸运*" to "3d6*5",
     )
 
     override val helpDescription =
