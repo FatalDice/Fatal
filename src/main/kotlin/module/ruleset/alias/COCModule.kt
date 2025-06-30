@@ -31,15 +31,15 @@ class COCModule : RulesetModule() {
         generateCount.toString()
 
     override fun getRulesetEntries(): List<Pair<String, String>> = listOf(
-        "STR" to "3d6*5",
-        "CON" to "3d6*5",
-        "POW" to "3d6*5",
-        "DEX" to "3d6*5",
-        "APP" to "3d6*5",
-        "SIZ" to "(2d6+6)*5",
-        "EDU" to "(2d6+6)*5",
-        "INT" to "(2d6+6)*5",
-        "LCK" to "3d6*5",
+        "力量" to "3d6*5",
+        "体质" to "3d6*5",
+        "体型" to "(2d6+6)*5",
+        "敏捷" to "3d6*5",
+        "外貌" to "3d6*5",
+        "智力" to "(2d6+6)*5",
+        "意志" to "3d6*5",
+        "教育" to "(2d6+6)*5",
+        "幸运" to "3d6*5",
     )
 
     override val helpDescription =
