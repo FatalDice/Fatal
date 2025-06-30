@@ -41,10 +41,14 @@ class DNDModule : RulesetModule() {
     )
 
     override fun generateRulesetHierarchy(entries: List<Pair<String, String>>, contact: Contact) {
-        compiledList += "[" + entries.joinToString(", ") { (_, value) ->
-            "${evaluateExpressionRaw(value, contact).first.first}"
-        } + "]"
+        val sortedResults = entries.map { (_, value) ->
+            evaluateExpressionRaw(value, contact).first.first
+        }.sorted()
+
+        compiledList += "[" + sortedResults.joinToString(", ") + "]"
     }
+
+    override fun getSeparator(): String = "\n"
 
     override val helpDescription =
         VanillaStringContent.MODULE_COC_DESC

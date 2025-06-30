@@ -71,7 +71,7 @@ open class RulesetModule : CommandModule {
                                 generateRuleset(entries, contact)
                             else
                                 generateRulesetHierarchy(entries, contact)
-                            if (times > 1 && index != times - 1) compiledList += "\n\n"
+                            if (times > 1 && index != times - 1) compiledList += getSeparator().ifBlank { "\n\n" }
                         }
 
                         if (compiledList.isBlank()) throw IllegalArgumentException("Compiled list is empty")
@@ -116,6 +116,8 @@ open class RulesetModule : CommandModule {
     open fun getRulesetName() = ""
 
     open fun getRulesetValue() = ""
+
+    open fun getSeparator() = ""
 
     open fun getRulesetEntries(): List<Pair<String, String>> = emptyList()
 
