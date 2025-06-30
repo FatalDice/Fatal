@@ -6,6 +6,7 @@ import uk.akane.fatal.module.help.HelpModule
 import uk.akane.fatal.module.roll.RollModule
 import uk.akane.fatal.module.ruleset.RulesetModule
 import uk.akane.fatal.module.ruleset.alias.COCModule
+import uk.akane.fatal.module.ruleset.alias.DNDModule
 import uk.akane.fatal.module.set.SetModule
 import uk.akane.fatal.module.set.alias.DefaultDiceModule
 import uk.akane.fatal.module.set.alias.NicknameModule
@@ -20,5 +21,6 @@ object ClassRegistrationUtils {
         DefaultDiceModule::class.java,
         RulesetModule::class.java,
         COCModule::class.java,
+        DNDModule::class.java,
     )
 }

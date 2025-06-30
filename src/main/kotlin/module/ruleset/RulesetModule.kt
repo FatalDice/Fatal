@@ -13,7 +13,7 @@ open class RulesetModule : CommandModule {
     private var dispatcher: Dispatcher? = null
     private var contact: Contact? = null
     private var rulesetList: List<String>? = null
-    private var compiledList: String = ""
+    var compiledList: String = ""
 
     private var operation: String = ""
     private var rulesetName: String = ""
@@ -67,7 +67,10 @@ open class RulesetModule : CommandModule {
 
                         val times = rulesetValue.toIntOrNull() ?: 1
                         repeat(times) { index ->
-                            generateRuleset(entries, contact)
+                            if (getOperation().isBlank())
+                                generateRuleset(entries, contact)
+                            else
+                                generateRulesetHierarchy(entries, contact)
                             if (times > 1 && index != times - 1) compiledList += "\n\n"
                         }
 
@@ -115,6 +118,10 @@ open class RulesetModule : CommandModule {
     open fun getRulesetValue() = ""
 
     open fun getRulesetEntries(): List<Pair<String, String>> = emptyList()
+
+    open fun generateRulesetHierarchy(entries: List<Pair<String, String>>, contact: Contact) {
+        generateRuleset(entries, contact)
+    }
 
     override fun generateKeywordReplacements() = mapOf(
         "RulesetName" to rulesetName,
