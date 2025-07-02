@@ -2,6 +2,7 @@ package uk.akane.fatal.module.roll.evaluate
 
 import uk.akane.fatal.utils.*
 import uk.akane.fatal.utils.DiceUtils.SHOW_STEP_COUNT_MAX
+import kotlin.math.max
 import kotlin.math.pow
 
 object Expr {
@@ -120,19 +121,38 @@ object Expr {
 
             is Expr.Modifier -> evaluateModifier(expr, bundle).first
 
-            else -> throw IllegalSyntaxException("Expression cannot be modified: $expr")
+            else -> throw IllegalSyntaxException("Expression cannot be modified: ${expr.javaClass}")
         }
 
         return endList
     }
 
     private fun evaluateModifier(expr: Expr.Modifier, bundle: Bundle): Pair<List<Long>, Bundle> {
+        val paramValue = evaluateInternal(expr.parameter, bundle)
+
+        // If source is a literal (exception)
+        if ((expr.source is Expr.Literal || expr.source is Expr.Grouping) && expr.op == Op.Minimum) {
+            expr.modifiableLeft = 1
+            expr.modifiableRight = 1
+
+            val literalResult = evaluateInternal(expr.source, bundle)
+            val result = max(literalResult, paramValue)
+
+            bundle.extendOnDemand(
+                Expr.Modifier(expr.op, expr.source, expr.parameter).toString(),
+                "${reassembleExpression(expr.source, bundle)}${expr.op}$paramValue → $result",
+                expr.op,
+                expr.parameter
+            )
+
+            return listOf(result) to bundle
+        }
+
         val raw = evaluateModifiableBinary(expr.source, bundle)
         (expr.source as Expr.Modification).let {
             expr.modifiableLeft = it.modifiableLeft
             expr.modifiableRight = it.modifiableRight
         }
-        val paramValue = evaluateInternal(expr.parameter, bundle)
 
         val (selected, formatted) = when (expr.op) {
             Op.KeepHighest -> raw.keepHighest(paramValue) to ""

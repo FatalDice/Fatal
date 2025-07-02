@@ -42,7 +42,7 @@ object DiceUtils {
         when (context) {
             is Friend -> ProfilesTableDao.getDiceCount(0, context.id)
             is Group -> GroupsTableDao.getDiceCount(context.id)
-            else -> throw IllegalArgumentException("Contact type is illegal")
+            else -> 20L
         }
 
     fun setDefaultDice(context: Contact, faceCount: Long?) {
