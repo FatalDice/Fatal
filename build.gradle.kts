@@ -75,7 +75,7 @@ buildConfig {
     className("BuildConstants")
     packageName("uk.akane.fatal")
 
-    buildConfigField("String", "AUTHOR", "\"AkaneTan, PAKTS\"")
+    buildConfigField("String", "AUTHOR", "\"AkaneTan, 契\"")
     buildConfigField("String", "MAJOR_VERSION", "\"${project.version}\"")
     buildConfigField("String", "HASH_VERSION",  '\"' + "git rev-parse --short=7 HEAD".runCommand(workingDir = rootDir) + '\"')
     buildConfigField("String", "BUILD_TIME", "\"${System.currentTimeMillis()}\"")
