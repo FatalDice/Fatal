@@ -10,6 +10,7 @@ import uk.akane.fatal.module.roll.evaluate.Expr
 import uk.akane.fatal.module.roll.evaluate.Lexeme
 import uk.akane.fatal.module.roll.evaluate.Parser
 import java.util.concurrent.ThreadLocalRandom
+import kotlin.reflect.jvm.internal.impl.renderer.DescriptorRenderer.ValueParametersHandler.DEFAULT
 
 object DiceUtils {
     fun rollDice(numRolls: Int, sides: Int): List<Long> = runBlocking {
@@ -42,7 +43,7 @@ object DiceUtils {
         when (context) {
             is Friend -> ProfilesTableDao.getDiceCount(0, context.id)
             is Group -> GroupsTableDao.getDiceCount(context.id)
-            else -> 20L
+            else -> DEFAULT_DICE
         }
 
     fun setDefaultDice(context: Contact, faceCount: Long?) {
