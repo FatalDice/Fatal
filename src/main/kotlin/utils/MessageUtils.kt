@@ -30,7 +30,7 @@ object MessageUtils {
     fun setNickName(sender: Contact, context: Contact, name: String) {
         ProfilesTableDao.setNickname(
             sender.id,
-            if (context is Group) context.id else 0,
+            context.getGroupIdOrZero(),
             name
         )
     }
@@ -38,6 +38,6 @@ object MessageUtils {
     fun getNickName(sender: Contact, context: Contact) =
         ProfilesTableDao.getNickname(
             sender.id,
-            if (context is Group) context.id else 0
+            context.getGroupIdOrZero()
         )
 }

@@ -5,7 +5,7 @@ import org.jetbrains.exposed.sql.javatime.datetime
 
 object CharacterAttributesTable : Table() {
     val id = integer("id").autoIncrement()
-    val CharacterSheetId = integer("character_sheet_id")
+    val CharacterSheetId = long("character_sheet_id")
 
     val attributeName = varchar("attribute_name", 64)
     val successRate = long("success_rate")

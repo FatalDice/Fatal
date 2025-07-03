@@ -1,5 +1,7 @@
 package uk.akane.fatal.utils
 
+import net.mamoe.mirai.contact.Contact
+import net.mamoe.mirai.contact.Group
 import java.util.*
 
 fun List<Long>.keepHighest(count: Long): List<Long> {
@@ -91,3 +93,12 @@ fun String.legalizeDiceExpression(defaultTimes: Long, defaultFaces: Long): Strin
 
     return builder.toString()
 }
+
+fun String.parseParameters(limit: Int = 4): List<String> {
+    val parts = this.trim().split(Regex("\\s+"))
+
+    return trim().split(Regex("\\s+")).take(limit) + List(limit - parts.size) { "" }
+}
+
+fun Contact.getGroupIdOrZero() =
+    if (this is Group) id else 0L

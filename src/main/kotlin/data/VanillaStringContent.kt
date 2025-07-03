@@ -43,7 +43,11 @@ object VanillaStringContent {
         CHARACTER_SHEET_LIST_GENERAL,
         CHARACTER_SHEET_CREATE_SUCCESSFUL,
         CHARACTER_SHEET_DELETE_SUCCESSFUL,
-        CHARACTER_SHEET_RENAME_SUCCESSFUL
+        CHARACTER_SHEET_RENAME_SUCCESSFUL,
+        SET_ATTRIBUTE_CLEAR_CHARACTER_SHEET_NOT_FOUND,
+        SET_ATTRIBUTE_ACTIVE_CHARACTER_SHEET_NOT_FOUND,
+        SET_ATTRIBUTE_INSERT_SUCCESSFUL,
+        SET_ATTRIBUTE_DELETE_SUCCESSFUL,
     }
 
     // Module translatable strings
@@ -110,6 +114,12 @@ object VanillaStringContent {
     const val CHARACTER_SHEET_CREATE_SUCCESSFUL = "已创建名为{CharacterSheetName}的角色卡。"
     const val CHARACTER_SHEET_DELETE_SUCCESSFUL = "已删除名为{CharacterSheetName}的角色卡。"
     const val CHARACTER_SHEET_RENAME_SUCCESSFUL = "已将{CharacterSheetName}重命名为{CharacterSheetNewName}。"
+
+    // Set attribute
+    const val SET_ATTRIBUTE_CLEAR_CHARACTER_SHEET_NOT_FOUND = "未找到指定的角色卡{CharacterSheetName}。"
+    const val SET_ATTRIBUTE_ACTIVE_CHARACTER_SHEET_NOT_FOUND = "未找到可用的角色卡。"
+    const val SET_ATTRIBUTE_INSERT_SUCCESSFUL = "成功地向角色卡{CharacterSheetName}插入了属性:\n{AttributeMap}"
+    const val SET_ATTRIBUTE_DELETE_SUCCESSFUL = "成功地清空了角色卡{CharacterSheetName}。"
 
     // Module desc.
     const val MODULE_HELP_DESC = "显示帮助命令"
@@ -217,5 +227,14 @@ object VanillaStringContent {
         "· 列出角色卡\n" +
         " - [/cs list] 列出所有角色卡\n" +
         " - [/cs list <角色卡名称>] 列出选中角色卡的所有信息\n\n" +
+        "* 注: 在输入参数时请不要包括范例中的 <> ，此符号仅作区分用。"
+
+    const val MODULE_SET_ATTRIBUTE_DESC = "设置角色卡属性"
+    const val MODULE_SET_ATTRIBUTE_CONTENT =
+        "· 设置属性\n" +
+        " - [/st 力量50外貌80] 将活跃角色卡的力量与外貌属性分别设置为 50 和 80\n" +
+        " - [/st 力量50 <角色卡名称>] 将目标角色卡的力量属性设置为 50\n" +
+        " - [/st clear] 删除活跃角色卡的所有内容\n" +
+        " - [/st clear <角色卡名称>] 删除目标角色卡的所有内容\n\n" +
         "* 注: 在输入参数时请不要包括范例中的 <> ，此符号仅作区分用。"
 }

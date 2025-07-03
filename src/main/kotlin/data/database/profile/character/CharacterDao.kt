@@ -4,6 +4,7 @@ import org.jetbrains.exposed.sql.*
 import org.jetbrains.exposed.sql.SqlExpressionBuilder.eq
 import org.jetbrains.exposed.sql.transactions.transaction
 import uk.akane.fatal.data.database.profile.ProfilesTable
+import uk.akane.fatal.utils.CharacterSheetNoDefaultException
 import uk.akane.fatal.utils.CharacterSheetNotFoundException
 import java.time.LocalDateTime
 
@@ -27,29 +28,28 @@ object CharacterDao {
         transaction {
             val characterSheetId = getCharacterSheetIdByName(userId, characterCardName)
 
-            if (characterSheetId != null) {
-                // First, check if it's the default character card for the user
-                val defaultCharacterSheetId = ProfilesTable
-                    .selectAll()
-                    .where { (ProfilesTable.userId eq userId) and (ProfilesTable.groupId eq 0L) }
-                    .singleOrNull()?.get(ProfilesTable.defaultCharacterSheetId)
+            // First, check if it's the default character card for the user
+            val defaultCharacterSheetId = ProfilesTable
+                .selectAll()
+                .where { (ProfilesTable.userId eq userId) and (ProfilesTable.groupId eq 0L) }
+                .singleOrNull()?.get(ProfilesTable.defaultCharacterSheetId)
 
-                if (defaultCharacterSheetId == characterSheetId) {
-                    ProfilesTable.update({ (ProfilesTable.userId eq userId) and (ProfilesTable.groupId eq 0L) }) {
-                        it[ProfilesTable.defaultCharacterSheetId] = null
-                    }
+            if (defaultCharacterSheetId == characterSheetId) {
+                ProfilesTable.update({ (ProfilesTable.userId eq userId) and (ProfilesTable.groupId eq 0L) }) {
+                    it[ProfilesTable.defaultCharacterSheetId] = null
                 }
-
-                CharacterSheetsTable.deleteWhere { CharacterSheetsTable.id eq characterSheetId }
-            } else {
-                throw CharacterSheetNotFoundException("$characterCardName not found")
             }
+
+            ProfilesTable.update({ (ProfilesTable.userId eq userId) and (ProfilesTable.groupId eq 0L) }) {
+                it[ProfilesTable.selectedCharacterSheetId] = null
+            }
+
+            CharacterSheetsTable.deleteWhere { CharacterSheetsTable.id eq characterSheetId }
         }
     }
 
     fun renameCharacterSheet(userId: Long, oldName: String, newName: String, newDescription: String?) {
         transaction {
-            if (getCharacterSheetIdByName(userId, oldName) == null) throw CharacterSheetNotFoundException("$oldName not found")
             CharacterSheetsTable
                 .update({ CharacterSheetsTable.userId eq userId and (CharacterSheetsTable.name eq oldName) }) {
                     it[this.name] = newName
@@ -91,12 +91,97 @@ object CharacterDao {
                 ?.get(ProfilesTable.selectedCharacterSheetId)
         }
 
+    fun getActiveCharacterSheet(userId: Long, groupId: Long): Long =
+        getChosenCharacterSheet(userId, groupId) ?:
+        getDefaultCharacterSheet(userId) ?:
+        throw CharacterSheetNoDefaultException("No default card found for $userId")
+
+    fun getActiveCharacterSheetName(userId: Long, groupId: Long): String =
+        transaction {
+            CharacterSheetsTable
+                .selectAll()
+                .where { CharacterSheetsTable.id eq getActiveCharacterSheet(userId, groupId) }
+                .singleOrNull()
+            ?.get(CharacterSheetsTable.name) ?: throw CharacterSheetNotFoundException("No active character found for $userId")
+        }
+
+    fun addAttributesToCharacterSheet(userId: Long, groupId: Long, attributes: Map<String, Long>, characterSheetName: String?) {
+        transaction {
+            val characterSheetId =
+                if (characterSheetName.isNullOrBlank())
+                    getActiveCharacterSheet(userId, groupId)
+                else
+                    getCharacterSheetIdByName(userId, characterSheetName)
+
+            println("characterSheetId: $characterSheetId")
+
+            attributes.forEach { (key, value) ->
+                val existingAttribute = CharacterAttributesTable
+                    .selectAll()
+                    .where {
+                        (CharacterAttributesTable.CharacterSheetId eq characterSheetId) and
+                            (CharacterAttributesTable.attributeName eq key)
+                    }
+                    .singleOrNull()
+
+                if (existingAttribute != null) {
+                    CharacterAttributesTable.update({
+                        (CharacterAttributesTable.CharacterSheetId eq characterSheetId) and
+                            (CharacterAttributesTable.attributeName eq key)
+                    }) {
+                        it[successRate] = value
+                        it[updatedAt] = LocalDateTime.now()
+                    }
+                } else {
+                    CharacterAttributesTable.insert {
+                        it[CharacterAttributesTable.CharacterSheetId] = characterSheetId
+                        it[CharacterAttributesTable.attributeName] = key
+                        it[CharacterAttributesTable.successRate] = value
+                        it[CharacterAttributesTable.createdAt] = LocalDateTime.now()
+                        it[CharacterAttributesTable.updatedAt] = LocalDateTime.now()
+                    }
+                }
+            }
+        }
+    }
+
+    fun getAttributesForCharacterSheet(userId: Long, groupId: Long, characterSheetName: String?): List<Map<String, Any>> {
+        return transaction {
+            val characterSheetId =
+                if (characterSheetName.isNullOrBlank())
+                    getActiveCharacterSheet(userId, groupId)
+                else
+                    getCharacterSheetIdByName(userId, characterSheetName)
+
+            CharacterAttributesTable
+                .selectAll()
+                .where { CharacterAttributesTable.CharacterSheetId eq characterSheetId }
+                .map {
+                    mapOf(
+                        "attributeName" to it[CharacterAttributesTable.attributeName],
+                        "successRate" to it[CharacterAttributesTable.successRate]
+                    )
+                }
+        }
+    }
+
+    fun deleteCharacterSheetContent(userId: Long, groupId: Long, characterSheetName: String?) {
+        transaction {
+            val characterSheetId =
+                if (characterSheetName.isNullOrBlank())
+                    getActiveCharacterSheet(userId, groupId)
+                else
+                    getCharacterSheetIdByName(userId, characterSheetName)
+
+            CharacterAttributesTable.deleteWhere { CharacterAttributesTable.CharacterSheetId eq characterSheetId }
+        }
+    }
+
     fun setDefaultCharacterSheet(userId: Long, characterSheetName: String) {
         transaction {
             val now = LocalDateTime.now()
 
             val characterSheetId = getCharacterSheetIdByName(userId, characterSheetName)
-                ?: throw CharacterSheetNotFoundException("$characterSheetName not found")
 
             val existingRow = ProfilesTable
                 .selectAll()
@@ -127,7 +212,6 @@ object CharacterDao {
             val now = LocalDateTime.now()
 
             val characterSheetId = getCharacterSheetIdByName(userId, characterSheetName)
-                ?: throw CharacterSheetNotFoundException("$characterSheetName not found")
 
             val updatedCount = ProfilesTable
                 .update({ (ProfilesTable.userId eq userId) and (ProfilesTable.groupId eq groupId) }) {
@@ -151,6 +235,6 @@ object CharacterDao {
         CharacterSheetsTable
             .selectAll()
             .where { CharacterSheetsTable.userId eq userId and (CharacterSheetsTable.name eq characterSheetName) }
-            .singleOrNull()?.get(CharacterSheetsTable.id)
+            .singleOrNull()?.get(CharacterSheetsTable.id) ?: throw CharacterSheetNotFoundException("$characterSheetName not found")
 
 }

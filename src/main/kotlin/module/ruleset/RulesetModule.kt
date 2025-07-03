@@ -7,6 +7,7 @@ import uk.akane.fatal.data.VanillaStringContent
 import uk.akane.fatal.data.database.universal.RulesetsTableDao
 import uk.akane.fatal.module.CommandModule
 import uk.akane.fatal.utils.DiceUtils.evaluateExpressionRaw
+import uk.akane.fatal.utils.parseParameters
 
 open class RulesetModule : CommandModule {
 
@@ -30,16 +31,15 @@ open class RulesetModule : CommandModule {
         this.contact = contact
         compiledList = ""
 
-        operation = parameter.substringBefore(' ').trim()
-        val rulesetNameRaw = parameter.substringAfter(' ')
-        val rulesetValueRaw = rulesetNameRaw.substringAfter(' ')
+        val (operationRaw, rulesetNameRaw, rulesetValueRaw) = parameter.parseParameters(3)
 
-        rulesetName = getRulesetName().ifBlank { rulesetNameRaw.substringBefore(' ') }.trim()
-        rulesetValue = rulesetValueRaw.substringBefore(' ').trim()
+        operation = operationRaw.ifBlank { getOperation() }.trim()
+        rulesetName = getRulesetName().ifBlank { rulesetNameRaw }.trim()
+        rulesetValue = rulesetValueRaw.trim()
 
         try {
             val resultStringType =
-                when (OperationType.valueOf(getOperation().ifBlank { operation }.uppercase())) {
+                when (OperationType.valueOf(operation.uppercase())) {
                     OperationType.ADD -> {
                         RulesetsTableDao.insert(
                             rulesetName,
