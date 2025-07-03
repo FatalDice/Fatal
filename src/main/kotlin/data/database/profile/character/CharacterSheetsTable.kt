@@ -2,9 +2,8 @@ package uk.akane.fatal.data.database.profile.character
 
 import org.jetbrains.exposed.sql.Table
 import org.jetbrains.exposed.sql.javatime.datetime
-import uk.akane.fatal.data.database.profile.ProfilesTable
 
-object CharacterCardsTable : Table() {
+object CharacterSheetsTable : Table() {
     val id = long("id").autoIncrement()
     val userId = long("user_id")
 
@@ -15,5 +14,4 @@ object CharacterCardsTable : Table() {
     val updatedAt = datetime("updated_at")
 
     override val primaryKey = PrimaryKey(id)
-    val userForeignKey = reference("user_id", ProfilesTable.userId)
 }

@@ -6,7 +6,8 @@ import org.jetbrains.exposed.sql.javatime.datetime
 object ProfilesTable : Table() {
     val userId = long("userid")
     val groupId = long("group_id")
-    val selectedCharacterCardId = long("selected_character_card_id").nullable()
+    val selectedCharacterSheetId = long("selected_character_sheet_id").nullable()
+    val defaultCharacterSheetId = long("default_character_sheet_id").nullable()
 
     val nickName = varchar("nickname", 64).nullable()
     val faceCount = long("face_count").nullable()

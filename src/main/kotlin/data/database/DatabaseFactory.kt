@@ -6,8 +6,7 @@ import org.jetbrains.exposed.sql.transactions.transaction
 import uk.akane.fatal.FatalPlugin
 import uk.akane.fatal.data.database.group.GroupsTable
 import uk.akane.fatal.data.database.profile.character.CharacterAttributesTable
-import uk.akane.fatal.data.database.profile.character.CharacterCardsTable
-import uk.akane.fatal.data.database.profile.ProfilesIndependentTable
+import uk.akane.fatal.data.database.profile.character.CharacterSheetsTable
 import uk.akane.fatal.data.database.profile.ProfilesTable
 import uk.akane.fatal.data.database.universal.RulesetsIndexTable
 import uk.akane.fatal.data.database.universal.RulesetsTable
@@ -25,8 +24,7 @@ object DatabaseFactory {
         )
         transaction {
             SchemaUtils.create(ProfilesTable)
-            SchemaUtils.create(ProfilesIndependentTable)
-            SchemaUtils.create(CharacterCardsTable)
+            SchemaUtils.create(CharacterSheetsTable)
             SchemaUtils.create(CharacterAttributesTable)
             SchemaUtils.create(GroupsTable)
             SchemaUtils.create(RulesetsIndexTable)

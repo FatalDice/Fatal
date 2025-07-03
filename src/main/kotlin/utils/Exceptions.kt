@@ -11,5 +11,5 @@ class RollNumberLessThanOneException(message: String) : RollException(message)
 class RollNumberOutOfBoundsException(message: String) : RollException(message)
 
 // Character card exception
-open class CharacterCardException(message: String) : RollException(message)
-class CharacterCardNotFoundException(message: String) : CharacterCardException(message)
+open class CharacterSheetException(message: String) : RollException(message)
+class CharacterSheetNotFoundException(message: String) : CharacterSheetException(message)

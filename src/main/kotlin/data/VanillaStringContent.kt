@@ -36,10 +36,18 @@ object VanillaStringContent {
         RULESET_INSERT_COMPLETE,
         RULESET_DELETE_COMPLETE,
         RULESET_LIST,
-        RULESET_GENERATION
+        RULESET_GENERATION,
+        CHARACTER_SHEET_NOT_FOUND,
+        CHARACTER_SHEET_SET_DEFAULT,
+        CHARACTER_SHEET_SET_SWITCH,
+        CHARACTER_SHEET_LIST_GENERAL,
+        CHARACTER_SHEET_CREATE_SUCCESSFUL,
+        CHARACTER_SHEET_DELETE_SUCCESSFUL,
+        CHARACTER_SHEET_RENAME_SUCCESSFUL
     }
 
     // Module translatable strings
+    const val EMPTY = ""
 
     // Help
     const val HELP_WELCOME_BANNER = "基于 Kotlin 实现的高机能 TRPG 掷骰机器人"
@@ -93,6 +101,15 @@ object VanillaStringContent {
     const val RULESET_DELETE_COMPLETE = "已删除规则组{RulesetName}。"
     const val RULESET_LIST = "以下是记录的规则组列表:\n{RulesetList}"
     const val RULESET_GENERATION = "生成了名为{RulesetName}的规则组:\n{RulesetGeneration}"
+
+    // Character card
+    const val CHARACTER_SHEET_NOT_FOUND = "名称为{CharacterSheetName}的角色卡未找到!"
+    const val CHARACTER_SHEET_SET_DEFAULT = "已将{CharacterSheetName}设置为默认角色卡。"
+    const val CHARACTER_SHEET_SET_SWITCH = "已将当前对话的角色卡设置为{CharacterSheetName}。"
+    const val CHARACTER_SHEET_LIST_GENERAL = "{SenderName}的角色卡列表:\n\n{CharacterSheetList}\n\n* 注: 标有 * 的项目为已选中角色卡，标有 # 的项目为默认角色卡。"
+    const val CHARACTER_SHEET_CREATE_SUCCESSFUL = "已创建名为{CharacterSheetName}的角色卡。"
+    const val CHARACTER_SHEET_DELETE_SUCCESSFUL = "已删除名为{CharacterSheetName}的角色卡。"
+    const val CHARACTER_SHEET_RENAME_SUCCESSFUL = "已将{CharacterSheetName}重命名为{CharacterSheetNewName}。"
 
     // Module desc.
     const val MODULE_HELP_DESC = "显示帮助命令"
@@ -188,17 +205,17 @@ object VanillaStringContent {
         "* 注: 生成参数可忽略，这样只会生成 1 次人物卡作成。\n" +
         "* 注: 在输入参数时请不要包括范例中的 <> ，此符号仅作区分用。"
 
-    const val MODULE_CHARACTER_CARD_DESC = "切换和创建角色卡"
-    const val MODULE_CHARACTER_CARD_CONTENT =
+    const val MODULE_CHARACTER_SHEET_DESC = "切换和创建角色卡"
+    const val MODULE_CHARACTER_SHEET_CONTENT =
         "· 切换使用角色卡\n" +
-        " - [/cc default <角色卡名称>] 设置未设置群聊中的默认角色卡\n" +
-        " - [/cc switch <角色卡名称>] 切换当前群聊/对话中使用的角色卡\n\n" +
+        " - [/cs default <角色卡名称>] 设置未设置群聊中的默认角色卡\n" +
+        " - [/cs switch <角色卡名称>] 切换当前群聊/对话中使用的角色卡\n\n" +
         "· 编辑角色卡\n" +
-        " - [/cc create <角色卡名称> <角色描述>] 创建角色卡\n" +
-        " - [/cc delete <角色卡名称>] 永久删除角色卡\n" +
-        " - [/cc rename <原角色卡名称> <现角色卡名称> <现角色卡描述 (可选)>] 重命名角色卡\n\n" +
+        " - [/cs create <角色卡名称> <角色描述>] 创建角色卡\n" +
+        " - [/cs delete <角色卡名称>] 永久删除角色卡\n" +
+        " - [/cs rename <原角色卡名称> <现角色卡名称> <现角色卡描述 (可选)>] 重命名角色卡\n\n" +
         "· 列出角色卡\n" +
-        " - [/cc list] 列出所有角色卡\n" +
-        " - [/cc list <角色卡名称>] 列出选中角色卡的所有信息\n\n" +
+        " - [/cs list] 列出所有角色卡\n" +
+        " - [/cs list <角色卡名称>] 列出选中角色卡的所有信息\n\n" +
         "* 注: 在输入参数时请不要包括范例中的 <> ，此符号仅作区分用。"
 }
