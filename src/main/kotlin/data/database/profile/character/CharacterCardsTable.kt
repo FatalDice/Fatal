@@ -5,7 +5,7 @@ import org.jetbrains.exposed.sql.javatime.datetime
 import uk.akane.fatal.data.database.profile.ProfilesTable
 
 object CharacterCardsTable : Table() {
-    val id = integer("id").autoIncrement()
+    val id = long("id").autoIncrement()
     val userId = long("user_id")
 
     val name = varchar("name", 128)

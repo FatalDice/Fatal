@@ -2,6 +2,7 @@ package uk.akane.fatal.utils
 
 import uk.akane.fatal.module.CommandModule
 import uk.akane.fatal.module.bot.BotModule
+import uk.akane.fatal.module.character.CharacterCardModule
 import uk.akane.fatal.module.help.HelpModule
 import uk.akane.fatal.module.roll.RollModule
 import uk.akane.fatal.module.ruleset.RulesetModule
@@ -22,5 +23,6 @@ object ClassRegistrationUtils {
         RulesetModule::class.java,
         COCModule::class.java,
         DNDModule::class.java,
+        CharacterCardModule::class.java,
     )
 }
