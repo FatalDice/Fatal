@@ -4,13 +4,12 @@ import kotlinx.coroutines.*
 import net.mamoe.mirai.contact.Contact
 import net.mamoe.mirai.contact.Friend
 import net.mamoe.mirai.contact.Group
-import uk.akane.fatal.data.database.GroupsTableDao
-import uk.akane.fatal.data.database.ProfilesTableDao
+import uk.akane.fatal.data.database.group.GroupsTableDao
+import uk.akane.fatal.data.database.profile.ProfilesTableDao
 import uk.akane.fatal.module.roll.evaluate.Expr
 import uk.akane.fatal.module.roll.evaluate.Lexeme
 import uk.akane.fatal.module.roll.evaluate.Parser
 import java.util.concurrent.ThreadLocalRandom
-import kotlin.reflect.jvm.internal.impl.renderer.DescriptorRenderer.ValueParametersHandler.DEFAULT
 
 object DiceUtils {
     fun rollDice(numRolls: Int, sides: Int): List<Long> = runBlocking {

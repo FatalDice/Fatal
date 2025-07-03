@@ -4,7 +4,7 @@ import net.mamoe.mirai.contact.Contact
 import net.mamoe.mirai.contact.Friend
 import net.mamoe.mirai.contact.Group
 import net.mamoe.mirai.contact.Member
-import uk.akane.fatal.data.database.ProfilesTableDao
+import uk.akane.fatal.data.database.profile.ProfilesTableDao
 
 object MessageUtils {
     fun getRawSenderName(sender: Contact) =

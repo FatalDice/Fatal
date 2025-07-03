@@ -1,4 +1,4 @@
-package uk.akane.fatal.data.database
+package uk.akane.fatal.data.database.group
 
 import org.jetbrains.exposed.sql.insert
 import org.jetbrains.exposed.sql.selectAll

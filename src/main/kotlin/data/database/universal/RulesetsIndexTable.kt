@@ -1,4 +1,4 @@
-package uk.akane.fatal.data.database
+package uk.akane.fatal.data.database.universal
 
 import org.jetbrains.exposed.sql.Table
 

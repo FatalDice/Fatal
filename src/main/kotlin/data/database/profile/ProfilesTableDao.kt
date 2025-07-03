@@ -1,4 +1,4 @@
-package uk.akane.fatal.data.database
+package uk.akane.fatal.data.database.profile
 
 import org.jetbrains.exposed.sql.and
 import org.jetbrains.exposed.sql.insert
@@ -23,7 +23,7 @@ object ProfilesTableDao {
                 ProfilesTable.insert {
                     it[ProfilesTable.userId] = userId
                     it[ProfilesTable.groupId] = groupId
-                    it[ProfilesTable.nickName] = nickname
+                    it[nickName] = nickname
                     it[createdAt] = now
                     it[updatedAt] = now
                 }

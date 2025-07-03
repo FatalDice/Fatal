@@ -1,4 +1,4 @@
-package uk.akane.fatal.data.database
+package uk.akane.fatal.data.database.universal
 
 import org.jetbrains.exposed.sql.SqlExpressionBuilder.eq
 import org.jetbrains.exposed.sql.deleteWhere
@@ -11,7 +11,7 @@ object RulesetsTableDao {
     fun insert(rulesetName: String, rulesetList: List<Pair<String, String>>) {
         transaction {
             RulesetsIndexTable.insertIgnore {
-                it[RulesetsIndexTable.id] = rulesetName
+                it[id] = rulesetName
             }
 
             rulesetList.forEach { (k, v) ->
