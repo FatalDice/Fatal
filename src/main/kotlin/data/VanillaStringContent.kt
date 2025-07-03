@@ -117,7 +117,7 @@ object VanillaStringContent {
 
     // Set attribute
     const val SET_ATTRIBUTE_CLEAR_CHARACTER_SHEET_NOT_FOUND = "未找到指定的角色卡{CharacterSheetName}。"
-    const val SET_ATTRIBUTE_ACTIVE_CHARACTER_SHEET_NOT_FOUND = "未找到可用的角色卡。"
+    const val SET_ATTRIBUTE_ACTIVE_CHARACTER_SHEET_NOT_FOUND = "未找到可用的角色卡。\n请使用 [/cs create <角色卡名称>] 创建角色卡!"
     const val SET_ATTRIBUTE_INSERT_SUCCESSFUL = "成功地向角色卡{CharacterSheetName}插入了属性:\n{AttributeMap}"
     const val SET_ATTRIBUTE_DELETE_SUCCESSFUL = "成功地清空了角色卡{CharacterSheetName}。"
 
