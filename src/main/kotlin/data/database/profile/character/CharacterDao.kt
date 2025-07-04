@@ -4,6 +4,7 @@ import org.jetbrains.exposed.sql.*
 import org.jetbrains.exposed.sql.SqlExpressionBuilder.eq
 import org.jetbrains.exposed.sql.transactions.transaction
 import uk.akane.fatal.data.database.profile.ProfilesTable
+import uk.akane.fatal.utils.CharacterSheetAttributeNotFoundException
 import uk.akane.fatal.utils.CharacterSheetNoDefaultException
 import uk.akane.fatal.utils.CharacterSheetNotFoundException
 import java.time.LocalDateTime
@@ -29,10 +30,7 @@ object CharacterDao {
             val characterSheetId = getCharacterSheetIdByName(userId, characterCardName)
 
             // First, check if it's the default character card for the user
-            val defaultCharacterSheetId = ProfilesTable
-                .selectAll()
-                .where { (ProfilesTable.userId eq userId) and (ProfilesTable.groupId eq 0L) }
-                .singleOrNull()?.get(ProfilesTable.defaultCharacterSheetId)
+            val defaultCharacterSheetId = getDefaultCharacterSheet(userId)
 
             if (defaultCharacterSheetId == characterSheetId) {
                 ProfilesTable.update({ (ProfilesTable.userId eq userId) and (ProfilesTable.groupId eq 0L) }) {
@@ -40,11 +38,21 @@ object CharacterDao {
                 }
             }
 
-            ProfilesTable.update({ (ProfilesTable.userId eq userId) and (ProfilesTable.groupId eq 0L) }) {
-                it[ProfilesTable.selectedCharacterSheetId] = null
-            }
+            ProfilesTable
+                .selectAll()
+                .where { ProfilesTable.userId eq userId }
+                .forEach { row ->
+                    if (row[ProfilesTable.selectedCharacterSheetId] == characterSheetId) {
+                        ProfilesTable.update({
+                            (ProfilesTable.userId eq userId) and (ProfilesTable.groupId eq row[ProfilesTable.groupId])
+                        }) {
+                            it[ProfilesTable.selectedCharacterSheetId] = null
+                        }
+                    }
+                }
 
             CharacterSheetsTable.deleteWhere { CharacterSheetsTable.id eq characterSheetId }
+            CharacterAttributesTable.deleteWhere { CharacterAttributesTable.CharacterSheetId eq characterSheetId }
         }
     }
 
@@ -113,7 +121,7 @@ object CharacterDao {
                 else
                     getCharacterSheetIdByName(userId, characterSheetName)
 
-            println("characterSheetId: $characterSheetId")
+            println("characterSheetId: $characterSheetId. isNullOrBlank: ${characterSheetName.isNullOrBlank()}")
 
             attributes.forEach { (key, value) ->
                 val existingAttribute = CharacterAttributesTable
@@ -145,7 +153,11 @@ object CharacterDao {
         }
     }
 
-    fun getAttributesForCharacterSheet(userId: Long, groupId: Long, characterSheetName: String?): List<Map<String, Any>> {
+    fun getAttributesForCharacterSheet(
+        userId: Long,
+        groupId: Long,
+        characterSheetName: String?
+    ): Map<String, Long> {
         return transaction {
             val characterSheetId =
                 if (characterSheetName.isNullOrBlank())
@@ -156,12 +168,23 @@ object CharacterDao {
             CharacterAttributesTable
                 .selectAll()
                 .where { CharacterAttributesTable.CharacterSheetId eq characterSheetId }
-                .map {
-                    mapOf(
-                        "attributeName" to it[CharacterAttributesTable.attributeName],
-                        "successRate" to it[CharacterAttributesTable.successRate]
-                    )
+                .associate {
+                    it[CharacterAttributesTable.attributeName] to it[CharacterAttributesTable.successRate]
                 }
+        }
+    }
+
+    fun getAttributeForCharacterSheet(userId: Long, groupId: Long, attributeName: String): Long {
+        return transaction {
+            val characterSheetId =
+                getActiveCharacterSheet(userId, groupId)
+
+            CharacterAttributesTable
+                .selectAll()
+                .where { (CharacterAttributesTable.CharacterSheetId eq characterSheetId) and (CharacterAttributesTable.attributeName eq attributeName) }
+                .singleOrNull()
+                ?.get(CharacterAttributesTable.successRate) ?:
+                    throw CharacterSheetAttributeNotFoundException("No attribute found for $attributeName")
         }
     }
 

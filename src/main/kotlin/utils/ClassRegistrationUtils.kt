@@ -3,6 +3,7 @@ package uk.akane.fatal.utils
 import uk.akane.fatal.module.CommandModule
 import uk.akane.fatal.module.bot.BotModule
 import uk.akane.fatal.module.character.CharacterSheetModule
+import uk.akane.fatal.module.character.RollAttributeModule
 import uk.akane.fatal.module.character.SetAttributeModule
 import uk.akane.fatal.module.help.HelpModule
 import uk.akane.fatal.module.roll.RollModule
@@ -25,6 +26,7 @@ object ClassRegistrationUtils {
         COCModule::class.java,
         DNDModule::class.java,
         CharacterSheetModule::class.java,
-        SetAttributeModule::class.java
+        SetAttributeModule::class.java,
+        RollAttributeModule::class.java,
     )
 }

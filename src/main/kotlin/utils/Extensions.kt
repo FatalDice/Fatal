@@ -100,5 +100,7 @@ fun String.parseParameters(limit: Int = 4): List<String> {
     return trim().split(Regex("\\s+")).take(limit) + List(limit - parts.size) { "" }
 }
 
+fun String.isNumeric(): Boolean = this.matches(Regex("\\d+"))
+
 fun Contact.getGroupIdOrZero() =
     if (this is Group) id else 0L

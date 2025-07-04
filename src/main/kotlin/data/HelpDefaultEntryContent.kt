@@ -6,5 +6,6 @@ object HelpDefaultEntryContent {
     val defaultEntryList: List<HelpEntry> = listOf(
         HelpEntry("开源", "开放源代码的相关描述", VanillaStringContent.HELP_OPENSOURCE_INFORMATION),
         HelpEntry("联系", "联系作者", VanillaStringContent.HELP_CONTACT),
+        HelpEntry("协议", "机器人使用协议", VanillaStringContent.HELP_SERVICE_AGREEMENT)
     )
 }

@@ -48,6 +48,17 @@ object VanillaStringContent {
         SET_ATTRIBUTE_ACTIVE_CHARACTER_SHEET_NOT_FOUND,
         SET_ATTRIBUTE_INSERT_SUCCESSFUL,
         SET_ATTRIBUTE_DELETE_SUCCESSFUL,
+        SET_ATTRIBUTE_ATTRIBUTE_NOT_FOUND,
+        SET_ATTRIBUTE_ATTRIBUTE_DISPLAY,
+        SET_ATTRIBUTE_ATTRIBUTE_MAP_DISPLAY,
+        ROLL_ATTRIBUTE_REPLY,
+        ROLL_ATTRIBUTE_REPLY_WITH_REASON,
+        ROLL_RESULT_REGULAR_SUCCESS,
+        ROLL_RESULT_HARD_SUCCESS,
+        ROLL_RESULT_EXTREME_SUCCESS,
+        ROLL_RESULT_CRITICAL_SUCCESS,
+        ROLL_RESULT_FAILURE,
+        ROLL_RESULT_FUMBLE,
     }
 
     // Module translatable strings
@@ -59,6 +70,8 @@ object VanillaStringContent {
         "宿命 Dice 基于这些项目编写而成:\n\nmamoe/Mirai\nMrXiaoM/overflow\nJetBrains/Kotlin\n\n本项目自豪地使用 AGPL-3.0 协议开源，有关 AGPL-3.0 协议的详细信息，请翻阅: https://www.gnu.org/licenses/agpl-3.0.en.html\n如有鸣谢缺失，请联系开发者。"
     const val HELP_CONTACT =
         "宿命 Dice 用户交流群: 709707258\n\n有 BUG 或者建议想要反馈，也可以到官方 Github 上提交 Issue。"
+    const val HELP_SERVICE_AGREEMENT =
+        "· 协议适用\n - 阅读本协议、邀请骰娘、或使用任意服务即视为同意本协议内容\n - 若不同意，请使用 .dismiss 命令将骰娘移出群聊\n\n· 用户行为规范\n - 禁止禁言、踢出骰娘或刷屏式掷骰行为\n - 滥用行为将记录并可能导致服务中断\n - 使用 .bot on/off 控制骰娘启用状态\n\n· 群邀请责任\n - 骰娘默认自动接受群邀请\n - 若被邀请至不友善环境，邀请者承担连带责任\n\n· 使用限制\n - 严禁用于赌博、诈骗等违法用途\n - 对敏感内容（如昵称）服务可能会自动拒绝\n\n· 服务可用性说明\n - 由于服务器和资金限制，服务不保证100%可用\n - 停机期间无响应，但不友善行为依旧视为违约\n\n· 协议违约处理\n - 严重违规行为将导致服务终止与拉黑\n - 黑名单可协商，但骰主拥有最终裁定权\n\n· 协议变更与通知\n - 协议条款可能随时变动，请关注 .help、签名、空间或官方群通知\n\n· 服务费用\n - 掷骰服务完全免费，欢迎自愿投食支持\n\n· 开源与授权协议\n - 若使用本服务的源代码或部署服务，必须遵守 AGPL-3.0 协议\n - 包括开源衍生项目、部署时的源码公开与原始署名保留\n - 违规使用将视为严重违约，骰主保留维权权利\n\n· 最终解释权\n - 本服务最终解释权归骰主（服务提供方）所有\n\n* 注: 在阅读本协议时请注意行为后果，使用即代表已完全接受本协议。"
     const val HELP_COMMAND_LIST = "指令"
     const val HELP_COMMAND_LIST_DESC = "查看指令列表"
     const val HELP_COMMAND_LIST_TITLE = "宿命 Dice 指令列表:"
@@ -66,7 +79,7 @@ object VanillaStringContent {
     const val HELP_COMMAND_LIST_FOOTER = "本帮助页面为自动生成。"
     const val HELP_MODULE_INDICATOR = "正在显示 %s 的帮助条目:"
     const val HELP_MAIN_PAGE =
-        "{PluginVersionHeader}\n\n{HelpWelcomeBanner}\n\n/help 指令  获取指令列表\n/help 开源  查看开源信息\n/help 联系  作者联系方式\n\n输入 /bot 查看版本信息"
+        "{PluginVersionHeader}\n\n{HelpWelcomeBanner}\n\n/help 指令  获取指令列表\n/help 协议  查看使用协议\n/help 开源  查看开源信息\n/help 联系  作者联系方式\n\n输入 /bot 查看版本信息"
     const val HELP_NOT_FOUND = "帮助条目{HelpEntry}未找到。"
 
     // Bot
@@ -117,9 +130,22 @@ object VanillaStringContent {
 
     // Set attribute
     const val SET_ATTRIBUTE_CLEAR_CHARACTER_SHEET_NOT_FOUND = "未找到指定的角色卡{CharacterSheetName}。"
-    const val SET_ATTRIBUTE_ACTIVE_CHARACTER_SHEET_NOT_FOUND = "未找到可用的角色卡。\n请使用 [/cs create <角色卡名称>] 创建角色卡!"
+    const val SET_ATTRIBUTE_ACTIVE_CHARACTER_SHEET_NOT_FOUND = "未找到可用的角色卡。\n已创建默认角色卡。"
     const val SET_ATTRIBUTE_INSERT_SUCCESSFUL = "成功地向角色卡{CharacterSheetName}插入了属性:\n{AttributeMap}"
     const val SET_ATTRIBUTE_DELETE_SUCCESSFUL = "成功地清空了角色卡{CharacterSheetName}。"
+    const val SET_ATTRIBUTE_ATTRIBUTE_NOT_FOUND = "未找到属性{AttributeName}!"
+    const val SET_ATTRIBUTE_ATTRIBUTE_DISPLAY = "{CharacterSheetName}的属性{AttributeName}为{AttributeValue}"
+    const val SET_ATTRIBUTE_ATTRIBUTE_MAP_DISPLAY = "{CharacterSheetName}的属性列表:\n{AttributeMap}"
+
+    // Roll attribute
+    const val ROLL_ATTRIBUTE_REPLY = "{SenderName}投掷了一枚骰子:\n{Evaluation} → {Result}"
+    const val ROLL_ATTRIBUTE_REPLY_WITH_REASON = "{SenderName}因为{RollReason}投掷了一枚骰子:\n{Evaluation} → {Result}"
+    const val ROLL_RESULT_REGULAR_SUCCESS = "成功"
+    const val ROLL_RESULT_HARD_SUCCESS = "困难成功"
+    const val ROLL_RESULT_EXTREME_SUCCESS = "极难成功"
+    const val ROLL_RESULT_CRITICAL_SUCCESS = "大成功"
+    const val ROLL_RESULT_FAILURE = "失败"
+    const val ROLL_RESULT_FUMBLE = "大失败"
 
     // Module desc.
     const val MODULE_HELP_DESC = "显示帮助命令"
@@ -236,5 +262,17 @@ object VanillaStringContent {
         " - [/st 力量50 <角色卡名称>] 将目标角色卡的力量属性设置为 50\n" +
         " - [/st clear] 删除活跃角色卡的所有内容\n" +
         " - [/st clear <角色卡名称>] 删除目标角色卡的所有内容\n\n" +
+        "· 展示属性\n" +
+        " - [/st show] 展示活跃角色卡的所有属性\n" +
+        " - [/st show <属性名称>] 展示活跃角色卡的某一属性\n\n" +
+        "* 注: 在输入参数时请不要包括范例中的 <> ，此符号仅作区分用。"
+
+    const val MODULE_ROLL_ATTRIBUTE_DESC = "检定角色卡属性"
+    const val MODULE_ROLL_ATTRIBUTE_CONTENT =
+        "· 检定属性\n" +
+        " - [/ra <成功率>] 检定无名称的属性\n" +
+        " - [/ra <属性名称>] 检定当前角色卡中的目标属性\n" +
+        " - [/ra <成功率> <检定原因>]" +
+        " - [/ra <属性名称> <成功率> <检定原因>] 检定目标属性的同时增加原因\n\n" +
         "* 注: 在输入参数时请不要包括范例中的 <> ，此符号仅作区分用。"
 }
