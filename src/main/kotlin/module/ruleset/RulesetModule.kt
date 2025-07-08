@@ -33,9 +33,9 @@ open class RulesetModule : CommandModule {
 
         val (operationRaw, rulesetNameRaw, rulesetValueRaw) = parameter.parseParameters(3)
 
-        operation = operationRaw.ifBlank { getOperation() }.trim()
+        operation = getOperation().ifBlank { operationRaw.ifBlank { getOperation() } }.trim()
         rulesetName = getRulesetName().ifBlank { rulesetNameRaw }.trim()
-        rulesetValue = rulesetValueRaw.trim()
+        rulesetValue = getRulesetValue().ifBlank { rulesetValueRaw }.trim()
 
         try {
             val resultStringType =
