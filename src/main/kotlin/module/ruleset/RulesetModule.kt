@@ -31,16 +31,15 @@ open class RulesetModule : CommandModule {
         this.contact = contact
         compiledList = ""
 
-        operation = parameter.substringBefore(' ').trim()
-        val rulesetNameRaw = parameter.substringAfter(' ')
-        val rulesetValueRaw = rulesetNameRaw.substringAfter(' ')
+        val (operationRaw, rulesetNameRaw, rulesetValueRaw) = parameter.parseParameters(3)
 
-        rulesetName = getRulesetName().ifBlank { rulesetNameRaw.substringBefore(' ') }.trim()
-        rulesetValue = rulesetValueRaw.substringBefore(' ').trim()
+        operation = operationRaw.ifBlank { getOperation() }.trim()
+        rulesetName = getRulesetName().ifBlank { rulesetNameRaw }.trim()
+        rulesetValue = rulesetValueRaw.trim()
 
         try {
             val resultStringType =
-                when (OperationType.valueOf(getOperation().ifBlank { operation })) {
+                when (OperationType.valueOf(operation.uppercase())) {
                     OperationType.ADD -> {
                         RulesetsTableDao.insert(
                             rulesetName,
