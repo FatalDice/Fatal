@@ -94,10 +94,20 @@ fun String.legalizeDiceExpression(defaultTimes: Long, defaultFaces: Long): Strin
     return builder.toString()
 }
 
-fun String.parseParameters(limit: Int = 4): List<String> {
-    val parts = this.trim().split(Regex("\\s+"))
+fun String.parseParameters(limit: Int = 4, isSeparatedByNumeric: Boolean = false): List<String> {
+    val preprocessed = if (isSeparatedByNumeric) {
+        this.trim().replace(Regex("(?<=\\D)(?=\\d)|(?<=\\d)(?=\\D)"), " ")
+    } else {
+        this.trim()
+    }
 
-    return trim().split(Regex("\\s+")).take(limit) + List(limit - parts.size) { "" }
+    val parts = preprocessed.split(Regex("\\s+"), limit)
+
+    return if (parts.size < limit) {
+        parts + List(limit - parts.size) { "" }
+    } else {
+        parts
+    }
 }
 
 fun String.isNumeric(): Boolean = this.matches(Regex("\\d+"))

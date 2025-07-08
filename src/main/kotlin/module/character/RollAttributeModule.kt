@@ -36,7 +36,7 @@ class RollAttributeModule : CommandModule {
         this.sender = sender
         this.context = contact
         this.dispatcher = dispatcher
-        val (param1, param2, param3) = parameter.parseParameters(3)
+        val (param1, param2, param3) = parameter.parseParameters(3, true)
 
         try {
             when {
